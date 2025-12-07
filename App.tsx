@@ -6,13 +6,13 @@ import AuthModal from './components/AuthModal';
 import PaymentModal from './components/PaymentModal';
 import SellerDashboard from './components/SellerDashboard';
 import NotificationPanel from './components/NotificationPanel';
-import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, CheckCircleIcon, SearchIcon, MapPinIcon, XMarkIcon, SparklesIcon, LayoutDashboardIcon, BellIcon } from './components/Icons';
+import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, CheckCircleIcon, SearchIcon, MapPinIcon, XMarkIcon, SparklesIcon, LayoutDashboardIcon, BellIcon, ChevronDownIcon } from './components/Icons';
 
 // --- Constants ---
 const CITY_VENDORS: Record<string, string[]> = {
   'Satara': ['RAJDHANI HOME APPLIANCES', 'Shisa Appliances', 'E STORE'],
-  'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES'],
-  'Kolhapur': ['ORANGE HOME APPLIANCES', 'NOVE APPLIANCES']
+  'Kolhapur': ['ORANGE HOME APPLIANCES', 'NOVE APPLIANCES'],
+  'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES']
 };
 
 // --- Mock Data ---
@@ -22,6 +22,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [requests, setRequests] = useState<ProductRequirement[]>(MOCK_REQUESTS);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [currentCity, setCurrentCity] = useState('Satara');
   
   // Modal States
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -89,6 +90,10 @@ function App() {
 
   const handleLogin = (newUser: User) => {
     setUser(newUser);
+    // If logging in as a seller, update the current city to the seller's city
+    if (newUser.role === UserRole.SELLER && newUser.city) {
+      setCurrentCity(newUser.city);
+    }
     setShowAuthModal(false);
   };
 
@@ -113,7 +118,7 @@ function App() {
       bids: [],
       status: RequestStatus.OPEN,
       createdAt: Date.now(),
-      location: 'Satara' // Default for demo
+      location: currentCity // Use selected city
     };
     
     setRequests([newRequest, ...requests]);
@@ -201,13 +206,32 @@ function App() {
       {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg transition-all">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setSelectedRequest(null)}>
-            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-rose-900/20">
-              M
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setSelectedRequest(null)}>
+              <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-rose-900/20">
+                M
+              </div>
+              <span className="text-xl font-extrabold text-white tracking-tight hidden sm:block">
+                My Deal <span className="text-rose-500">24</span>
+              </span>
             </div>
-            <span className="text-xl font-extrabold text-white tracking-tight">
-              My Deal <span className="text-rose-500">24</span>
-            </span>
+            
+            {/* City Selector */}
+            <div className="relative group">
+               <div className="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 rounded-full px-4 py-1.5 border border-slate-700/50 transition-all cursor-pointer">
+                  <MapPinIcon className="w-4 h-4 text-rose-500" />
+                  <select 
+                      value={currentCity}
+                      onChange={(e) => setCurrentCity(e.target.value)}
+                      className="bg-transparent text-slate-200 text-sm font-bold outline-none appearance-none cursor-pointer pr-1"
+                  >
+                      {Object.keys(CITY_VENDORS).map(city => (
+                          <option key={city} value={city} className="bg-slate-900 text-white py-2">{city}</option>
+                      ))}
+                  </select>
+                  <ChevronDownIcon className="w-3 h-3 text-slate-500 pointer-events-none" />
+               </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -272,7 +296,10 @@ function App() {
            <div className="mb-8 flex justify-between items-center bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
               <div>
                 <h2 className="text-2xl font-extrabold text-slate-900">My Requests</h2>
-                <p className="text-slate-500">Manage your active requirements</p>
+                <div className="flex items-center gap-2 text-slate-500 mt-1">
+                  <p>Manage your active requirements in</p>
+                  <span className="text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded-md text-xs border border-rose-100">{currentCity}</span>
+                </div>
               </div>
               <button 
                 onClick={() => setShowRequestForm(true)}
@@ -309,9 +336,25 @@ function App() {
                   The smartest way to buy Home appliances and more
                 </p>
                 
-                <p className="text-lg text-slate-500 mb-10 max-w-xl mx-auto font-medium">
-                  Submit your requirement. Local verified sellers compete to give you the lowest price.
+                <p className="text-lg text-slate-500 mb-6 max-w-xl mx-auto font-medium">
+                  Submit your requirement. Local verified sellers in <span className="font-bold text-slate-800">{currentCity}</span> compete to give you the lowest price.
                 </p>
+
+                <div className="mb-10 flex justify-center">
+                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold shadow-sm">
+                        <MapPinIcon className="w-4 h-4 text-rose-500" />
+                        Current Location: 
+                        <select 
+                            value={currentCity}
+                            onChange={(e) => setCurrentCity(e.target.value)}
+                            className="bg-transparent border-none outline-none text-slate-900 font-bold cursor-pointer"
+                        >
+                             {Object.keys(CITY_VENDORS).map(city => (
+                                <option key={city} value={city}>{city}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <button 
@@ -348,7 +391,7 @@ function App() {
                         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                             <PlusIcon className="w-8 h-8" />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-900">No requests yet</h3>
+                        <h3 className="text-lg font-bold text-slate-900">No requests in {currentCity}</h3>
                         <p className="text-slate-500 mb-6 max-w-xs mx-auto">Post your first requirement to start getting bids from local sellers.</p>
                         <button 
                             onClick={() => setShowRequestForm(true)}
