@@ -276,40 +276,28 @@ function App() {
                </div>
             </div>
 
-            {/* Navigation Tabs */}
-            {user && (
-              <div className="flex items-center gap-2">
-                {/* Home Tab - Hides on Landing */}
-                {view !== 'landing' && (
-                  <button 
-                    onClick={() => setView('landing')}
-                    className="flex items-center gap-2 px-4 py-1.5 bg-slate-800/50 hover:bg-slate-800 text-slate-200 hover:text-white rounded-full font-bold text-sm border border-transparent hover:border-slate-700 transition-all"
-                  >
-                    <HomeIcon className="w-4 h-4" />
-                    <span>Home</span>
-                  </button>
-                )}
-                
-                {/* Dashboard Tab - Hides on Dashboard */}
-                {view !== 'dashboard' && (
-                  <button 
-                    onClick={() => setView('dashboard')}
-                    className="flex items-center gap-2 px-4 py-1.5 bg-slate-800/50 hover:bg-slate-800 text-slate-200 hover:text-white rounded-full font-bold text-sm border border-transparent hover:border-slate-700 transition-all"
-                  >
-                    <LayoutDashboardIcon className="w-4 h-4" />
-                    <span>Dashboard</span>
-                  </button>
-                )}
-              </div>
+            {/* Home Tab - Visible on all pages EXCEPT Landing Page */}
+            {view !== 'landing' && (
+              <button 
+                onClick={() => setView('landing')}
+                className="flex items-center gap-2 px-4 py-1.5 bg-slate-800/50 hover:bg-slate-800 text-slate-200 hover:text-white rounded-full font-bold text-sm border border-transparent hover:border-slate-700 transition-all"
+              >
+                <HomeIcon className="w-4 h-4" />
+                <span>Home</span>
+              </button>
             )}
           </div>
 
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-4">
-                <div className="hidden md:flex flex-col items-end">
-                  <span className="text-sm font-bold text-slate-100">{user.name}</span>
-                  <span className="text-[10px] uppercase font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700">
+                <div 
+                  className="hidden md:flex flex-col items-end cursor-pointer group"
+                  onClick={() => setView('dashboard')}
+                  title="Go to Dashboard"
+                >
+                  <span className="text-sm font-bold text-slate-100 group-hover:text-rose-400 transition-colors">{user.name}</span>
+                  <span className="text-[10px] uppercase font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700 group-hover:border-rose-500/50 transition-colors">
                     {user.role}
                   </span>
                 </div>
