@@ -16,50 +16,7 @@ const CITY_VENDORS: Record<string, string[]> = {
 };
 
 // --- Mock Data ---
-const MOCK_REQUESTS: ProductRequirement[] = [
-  {
-    id: 'req-1',
-    userId: 'user-1',
-    title: 'Samsung 500L Double Door Refrigerator',
-    category: 'Fridge',
-    description: 'Looking for a silver finish, convertable 5-in-1 model. Must be energy efficient.',
-    specs: { brand: 'Samsung', capacity: '500L', type: 'Double Door', energyRating: '3 Star' },
-    estimatedMarketPrice: { min: 38000, max: 45000 },
-    bids: [
-      { id: 'bid-1', sellerName: 'RAJDHANI HOME APPLIANCES', amount: 39500, deliveryDays: 2, notes: 'Includes free installation', timestamp: Date.now() - 100000 },
-      { id: 'bid-2', sellerName: 'Shisa Appliances', amount: 38900, deliveryDays: 5, notes: 'Cardboard slightly damaged, product new', timestamp: Date.now() - 80000 },
-    ],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 200000,
-    location: 'Satara'
-  },
-  {
-    id: 'req-2',
-    userId: 'user-2',
-    title: 'Michelin Primacy 4 ST Tyres (Set of 4)',
-    category: 'Tyres',
-    description: 'For my Honda City. Size 195/65 R15.',
-    specs: { brand: 'Michelin', size: '195/65 R15', quantity: 4, type: 'Tubeless' },
-    estimatedMarketPrice: { min: 24000, max: 28000 },
-    bids: [],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 50000,
-    location: 'Pune'
-  },
-  {
-    id: 'req-3',
-    userId: 'user-1',
-    title: 'LG 1.5 Ton 5 Star Split AC',
-    category: 'AC',
-    description: 'Dual Inverter Compressor, AI Convertible 6-in-1, HD Filter with Anti-Virus Protection. Looking for 2024 model.',
-    specs: { brand: 'LG', capacity: '1.5 Ton', type: 'Split', energyRating: '5 Star' },
-    estimatedMarketPrice: { min: 42000, max: 48000 },
-    bids: [],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 10000,
-    location: 'Pune'
-  }
-];
+const MOCK_REQUESTS: ProductRequirement[] = [];
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -82,12 +39,10 @@ function App() {
     if (!user) return requests.filter(r => r.status === RequestStatus.OPEN);
     
     if (user.role === UserRole.BUYER) {
-      // Buyers see their own requests primarily
-      return requests.sort((a, b) => {
-        if (a.userId === user.id && b.userId !== user.id) return -1;
-        if (a.userId !== user.id && b.userId === user.id) return 1;
-        return b.createdAt - a.createdAt;
-      });
+      // Buyers ONLY see their own requests
+      return requests
+        .filter(req => req.userId === user.id)
+        .sort((a, b) => b.createdAt - a.createdAt);
     } else {
       // Sellers see requests in their city or all open requests
       return requests
@@ -385,107 +340,123 @@ function App() {
               </div>
             )}
             
-            {/* ONLY show feed when user is logged in (hides mock fridge/tyre/AC from landing page) */}
+            {/* ONLY show feed when user is logged in */}
             {user && (user?.role !== UserRole.SELLER) && (
                <div className="grid grid-cols-1 gap-6">
-                 {filteredRequests.map(req => {
-                   const isOwner = user?.id === req.userId;
-                   const lowestBid = req.bids.length > 0 ? Math.min(...req.bids.map(b => b.amount)) : 0;
-                   const myWinningBid = user?.role === UserRole.SELLER ? req.bids.find(b => b.sellerName === user?.vendorName) : null;
-
-                   return (
-                     <div key={req.id} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                        <div className="flex flex-col md:flex-row gap-6">
-                           <div className="flex-1">
-                              <div className="flex items-start justify-between mb-2">
-                                <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-bold uppercase tracking-wide">
-                                  {req.category}
-                                </span>
-                                <div className="flex items-center text-slate-400 text-xs font-semibold gap-1">
-                                   <MapPinIcon className="w-3 h-3" />
-                                   {req.location}
-                                </div>
-                              </div>
-                              <h3 className="text-xl font-bold text-slate-900 mb-2 leading-tight">{req.title}</h3>
-                              <p className="text-slate-500 text-sm mb-4 line-clamp-2">{req.description}</p>
-                              
-                              <div className="flex flex-wrap gap-2 mb-4">
-                                {Object.entries(req.specs).slice(0,3).map(([k,v]) => (
-                                   <span key={k} className="text-xs bg-slate-50 border border-slate-100 px-2 py-1 rounded-md text-slate-600 font-medium">
-                                      {k}: {String(v)}
-                                   </span>
-                                ))}
-                              </div>
-
-                              <div className="flex items-center gap-4 text-xs font-semibold text-slate-400">
-                                 <span className="flex items-center gap-1">
-                                    <ClockIcon className="w-3 h-3" />
-                                    {new Date(req.createdAt).toLocaleDateString()}
-                                 </span>
-                                 <span>•</span>
-                                 <span>{req.bids.length} Bids</span>
-                                 {req.status === RequestStatus.CLOSED && (
-                                   <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Fulfilled</span>
-                                 )}
-                              </div>
-                           </div>
-                           
-                           <div className="w-full md:w-72 bg-slate-50 rounded-2xl p-5 flex flex-col justify-between border border-slate-100">
-                              <div>
-                                 <p className="text-xs text-slate-400 uppercase font-bold">Estimated Market Price</p>
-                                 <p className="text-slate-700 font-bold mb-4">₹{req.estimatedMarketPrice.min} - ₹{req.estimatedMarketPrice.max}</p>
-                                 
-                                 {req.bids.length > 0 && (
-                                   <div className="mb-4">
-                                      <p className="text-xs text-green-600 uppercase font-bold">Best Offer</p>
-                                      <p className="text-2xl font-black text-green-700">₹{lowestBid}</p>
-                                   </div>
-                                 )}
-                              </div>
-
-                              {user?.role === UserRole.BUYER && isOwner && req.status === RequestStatus.OPEN && (
-                                 <div className="space-y-2">
-                                    <p className="text-xs font-bold text-slate-400 uppercase mb-2">Offers Received</p>
-                                    {req.bids.length === 0 ? (
-                                      <p className="text-sm text-slate-400 italic">Waiting for sellers...</p>
-                                    ) : (
-                                      req.bids.map(bid => (
-                                        <div key={bid.id} className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center group">
-                                           <div>
-                                             <p className="font-bold text-slate-900">₹{bid.amount}</p>
-                                             <p className="text-[10px] text-slate-500 font-bold uppercase truncate max-w-[100px]">{bid.sellerName}</p>
-                                           </div>
-                                           <button 
-                                             onClick={() => handleAcceptBid(req, bid)}
-                                             className="bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-green-600 transition-colors"
-                                           >
-                                             Accept
-                                           </button>
-                                        </div>
-                                      ))
-                                    )}
-                                 </div>
-                              )}
-                              
-                              {user?.role === UserRole.SELLER && req.status === RequestStatus.OPEN && (
-                                <button 
-                                  onClick={() => { setSelectedRequest(req); setIsBidding(true); }}
-                                  className="w-full bg-slate-900 hover:bg-rose-600 text-white py-3 rounded-xl font-bold transition-all shadow-lg shadow-slate-200 active:scale-95"
-                                >
-                                  Place Bid
-                                </button>
-                              )}
-
-                              {!user && (
-                                <button disabled className="w-full bg-slate-200 text-slate-400 py-3 rounded-xl font-bold cursor-not-allowed text-sm">
-                                  Login to Interact
-                                </button>
-                              )}
-                           </div>
+                 {filteredRequests.length === 0 ? (
+                    <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                            <PlusIcon className="w-8 h-8" />
                         </div>
-                     </div>
-                   );
-                 })}
+                        <h3 className="text-lg font-bold text-slate-900">No requests yet</h3>
+                        <p className="text-slate-500 mb-6 max-w-xs mx-auto">Post your first requirement to start getting bids from local sellers.</p>
+                        <button 
+                            onClick={() => setShowRequestForm(true)}
+                            className="text-rose-600 font-bold hover:underline"
+                        >
+                            Create Request
+                        </button>
+                    </div>
+                 ) : (
+                    filteredRequests.map(req => {
+                        const isOwner = user?.id === req.userId;
+                        const lowestBid = req.bids.length > 0 ? Math.min(...req.bids.map(b => b.amount)) : 0;
+                        const myWinningBid = user?.role === UserRole.SELLER ? req.bids.find(b => b.sellerName === user?.vendorName) : null;
+
+                        return (
+                            <div key={req.id} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                <div className="flex flex-col md:flex-row gap-6">
+                                <div className="flex-1">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-bold uppercase tracking-wide">
+                                        {req.category}
+                                        </span>
+                                        <div className="flex items-center text-slate-400 text-xs font-semibold gap-1">
+                                        <MapPinIcon className="w-3 h-3" />
+                                        {req.location}
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-2 leading-tight">{req.title}</h3>
+                                    <p className="text-slate-500 text-sm mb-4 line-clamp-2">{req.description}</p>
+                                    
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {Object.entries(req.specs).slice(0,3).map(([k,v]) => (
+                                        <span key={k} className="text-xs bg-slate-50 border border-slate-100 px-2 py-1 rounded-md text-slate-600 font-medium">
+                                            {k}: {String(v)}
+                                        </span>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex items-center gap-4 text-xs font-semibold text-slate-400">
+                                        <span className="flex items-center gap-1">
+                                            <ClockIcon className="w-3 h-3" />
+                                            {new Date(req.createdAt).toLocaleDateString()}
+                                        </span>
+                                        <span>•</span>
+                                        <span>{req.bids.length} Bids</span>
+                                        {req.status === RequestStatus.CLOSED && (
+                                        <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Fulfilled</span>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                <div className="w-full md:w-72 bg-slate-50 rounded-2xl p-5 flex flex-col justify-between border border-slate-100">
+                                    <div>
+                                        <p className="text-xs text-slate-400 uppercase font-bold">Estimated Market Price</p>
+                                        <p className="text-slate-700 font-bold mb-4">₹{req.estimatedMarketPrice.min} - ₹{req.estimatedMarketPrice.max}</p>
+                                        
+                                        {req.bids.length > 0 && (
+                                        <div className="mb-4">
+                                            <p className="text-xs text-green-600 uppercase font-bold">Best Offer</p>
+                                            <p className="text-2xl font-black text-green-700">₹{lowestBid}</p>
+                                        </div>
+                                        )}
+                                    </div>
+
+                                    {user?.role === UserRole.BUYER && isOwner && req.status === RequestStatus.OPEN && (
+                                        <div className="space-y-2">
+                                            <p className="text-xs font-bold text-slate-400 uppercase mb-2">Offers Received</p>
+                                            {req.bids.length === 0 ? (
+                                            <p className="text-sm text-slate-400 italic">Waiting for sellers...</p>
+                                            ) : (
+                                            req.bids.map(bid => (
+                                                <div key={bid.id} className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center group">
+                                                <div>
+                                                    <p className="font-bold text-slate-900">₹{bid.amount}</p>
+                                                    <p className="text-[10px] text-slate-500 font-bold uppercase truncate max-w-[100px]">{bid.sellerName}</p>
+                                                </div>
+                                                <button 
+                                                    onClick={() => handleAcceptBid(req, bid)}
+                                                    className="bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-green-600 transition-colors"
+                                                >
+                                                    Accept
+                                                </button>
+                                                </div>
+                                            ))
+                                            )}
+                                        </div>
+                                    )}
+                                    
+                                    {user?.role === UserRole.SELLER && req.status === RequestStatus.OPEN && (
+                                        <button 
+                                        onClick={() => { setSelectedRequest(req); setIsBidding(true); }}
+                                        className="w-full bg-slate-900 hover:bg-rose-600 text-white py-3 rounded-xl font-bold transition-all shadow-lg shadow-slate-200 active:scale-95"
+                                        >
+                                        Place Bid
+                                        </button>
+                                    )}
+
+                                    {!user && (
+                                        <button disabled className="w-full bg-slate-200 text-slate-400 py-3 rounded-xl font-bold cursor-not-allowed text-sm">
+                                        Login to Interact
+                                        </button>
+                                    )}
+                                </div>
+                                </div>
+                            </div>
+                        );
+                    })
+                 )}
                </div>
             )}
           </div>
