@@ -297,74 +297,84 @@ export default function App() {
     <div className="min-h-screen flex flex-col font-sans">
       
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-indigo-100 sticky top-0 z-20 shadow-sm">
+      <header className="bg-gradient-to-r from-rose-600 to-orange-600 shadow-lg sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 group cursor-pointer flex-shrink-0" onClick={() => {setViewState('LIST'); setSelectedRequestId(null);}}>
-            <div className="bg-gradient-to-tr from-rose-600 to-red-600 text-white p-2 rounded-xl shadow-lg shadow-rose-200 group-hover:shadow-rose-300 transition-all group-hover:scale-105">
+            <div className="bg-white text-rose-600 p-2 rounded-xl shadow-md group-hover:scale-110 transition-transform">
               <TrendingDownIcon className="w-5 h-5" />
             </div>
-            <span className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-rose-700 to-red-600 tracking-tight hidden md:block">
+            <span className="font-extrabold text-2xl text-white tracking-tight hidden md:block text-shadow-sm">
               My Deal
             </span>
           </div>
 
-          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2">
             
             {/* Home Tab */}
             <button 
               onClick={() => {setViewState('LIST'); setSelectedRequestId(null);}}
-              className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all hidden md:block ${viewState === 'LIST' && !selectedRequestId ? 'text-rose-600 bg-rose-50' : 'text-slate-500 hover:text-slate-900'}`}
+              className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all hidden md:block ${viewState === 'LIST' && !selectedRequestId ? 'bg-white text-rose-600 shadow-md' : 'text-rose-100 hover:bg-white/10 hover:text-white'}`}
             >
               HOME
             </button>
 
+            {/* Dashboard Tab (Seller Only) */}
+            {activeRole === UserRole.SELLER && (
+              <button 
+                onClick={() => currentUser ? setViewState('DASHBOARD') : setIsAuthModalOpen(true)}
+                className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all flex items-center gap-2 ${viewState === 'DASHBOARD' ? 'bg-white text-rose-600 shadow-md' : 'text-rose-100 hover:bg-white/10 hover:text-white'}`}
+              >
+                <LayoutDashboardIcon className="w-4 h-4"/> DASHBOARD
+              </button>
+            )}
+
             {/* City Selector */}
             <div className="relative group flex-shrink-0">
-              <div className="flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-800 px-3 py-2 rounded-lg cursor-pointer hover:bg-rose-100 transition-colors">
-                <MapPinIcon className="w-4 h-4 text-rose-600" />
+              <div className="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-white/20 transition-colors backdrop-blur-sm">
+                <MapPinIcon className="w-4 h-4 text-white" />
                 <select 
                   value={currentCity}
                   onChange={(e) => { setCurrentCity(e.target.value); setViewState('LIST'); setSelectedRequestId(null); }}
                   disabled={currentUser?.role === UserRole.SELLER}
-                  className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 disabled:cursor-not-allowed uppercase tracking-wide"
+                  className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 disabled:cursor-not-allowed uppercase tracking-wide text-white [&>option]:text-slate-900"
                 >
                   {CITIES.map(city => (
                     <option key={city} value={city}>{city}</option>
                   ))}
                 </select>
-                <span className="absolute right-3 pointer-events-none text-rose-400 text-xs">▼</span>
+                <span className="absolute right-3 pointer-events-none text-white/70 text-xs">▼</span>
               </div>
             </div>
 
             {/* Vendor Identity Selector (Only for Seller & Not Logged In) */}
             {activeRole === UserRole.SELLER && !currentUser && (
                <div className="relative group flex-shrink-0 animate-in fade-in slide-in-from-right-4">
-               <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-800 px-3 py-2 rounded-lg cursor-pointer hover:bg-emerald-100 transition-colors">
-                 <StoreIcon className="w-4 h-4 text-emerald-600" />
+               <div className="flex items-center gap-2 bg-emerald-500/20 border border-emerald-300/30 text-emerald-50 px-3 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/30 transition-colors backdrop-blur-sm">
+                 <StoreIcon className="w-4 h-4 text-emerald-200" />
                  <select 
                    value={currentVendor}
                    onChange={(e) => setCurrentVendor(e.target.value)}
-                   className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 max-w-[150px] md:max-w-[200px] truncate uppercase tracking-wide"
+                   className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 max-w-[150px] md:max-w-[200px] truncate uppercase tracking-wide text-white [&>option]:text-slate-900"
                  >
                    {CITY_VENDORS[currentCity]?.map(vendor => (
                      <option key={vendor} value={vendor}>{vendor}</option>
                    ))}
                  </select>
-                 <span className="absolute right-3 pointer-events-none text-emerald-400 text-xs">▼</span>
+                 <span className="absolute right-3 pointer-events-none text-emerald-200 text-xs">▼</span>
                </div>
              </div>
             )}
 
             {/* User Auth Section */}
             {currentUser ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+              <div className="flex items-center gap-2 pl-2 border-l border-white/20">
                 <div className="text-right hidden sm:block">
-                  <p className="text-xs font-bold text-slate-900">{currentUser.name}</p>
-                  <p className="text-[10px] text-slate-500 uppercase font-bold">{currentUser.role}</p>
+                  <p className="text-xs font-bold text-white">{currentUser.name}</p>
+                  <p className="text-[10px] text-rose-100 uppercase font-bold opacity-80">{currentUser.role}</p>
                 </div>
                 <button 
                   onClick={() => setCurrentUser(null)}
-                  className="bg-slate-100 hover:bg-slate-200 p-2 rounded-full text-slate-500 transition-colors"
+                  className="bg-white/10 hover:bg-white/20 p-2 rounded-full text-white transition-colors"
                   title="Logout"
                 >
                   <UserIcon className="w-5 h-5" />
@@ -373,20 +383,20 @@ export default function App() {
             ) : (
                <button 
                  onClick={() => setIsAuthModalOpen(true)}
-                 className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-slate-800 transition-colors flex-shrink-0"
+                 className="bg-white text-rose-600 px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-rose-50 transition-colors flex-shrink-0"
                >
                  Log In
                </button>
             )}
 
             {/* Role Toggles - Hide if logged in to avoid confusion, or keep for quick switching in demo */}
-            <div className="flex bg-slate-100 p-1 rounded-full border border-slate-200 flex-shrink-0">
+            <div className="flex bg-black/20 p-1 rounded-full border border-white/10 flex-shrink-0">
               <button 
                 onClick={() => setActiveRole(UserRole.BUYER)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${
                   activeRole === UserRole.BUYER 
                     ? 'bg-white text-rose-600 shadow-md transform scale-105' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    : 'text-rose-100 hover:text-white'
                 }`}
               >
                 <UserIcon className="w-4 h-4"/>
@@ -397,7 +407,7 @@ export default function App() {
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${
                   activeRole === UserRole.SELLER 
                     ? 'bg-white text-emerald-600 shadow-md transform scale-105' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    : 'text-rose-100 hover:text-white'
                 }`}
               >
                 <StoreIcon className="w-4 h-4"/>
@@ -647,12 +657,6 @@ export default function App() {
                         <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Marketplace Requests</h1>
                         <p className="text-slate-500">Active leads in <span className="font-bold text-rose-600">{currentCity}</span></p>
                      </div>
-                     <button 
-                        onClick={() => currentUser ? setViewState('DASHBOARD') : setIsAuthModalOpen(true)}
-                        className="bg-white text-slate-700 border border-slate-200 hover:border-slate-300 px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2"
-                     >
-                        <LayoutDashboardIcon className="w-5 h-5"/> Dashboard
-                     </button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -708,6 +712,38 @@ export default function App() {
            </div>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-rose-600 to-orange-600 text-white mt-auto relative z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div className="text-center md:text-left">
+              <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
+                <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
+                  <TrendingDownIcon className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-extrabold text-lg text-white">My Deal</span>
+              </div>
+              <p className="text-rose-100 text-sm max-w-xs opacity-90">
+                Connecting smart buyers with trusted local sellers for the best market prices.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-bold text-rose-100">
+              <a href="#" className="hover:text-white transition-colors">How it Works</a>
+              <a href="#" className="hover:text-white transition-colors">Seller Guidelines</a>
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Support</a>
+            </div>
+
+            <div className="text-center md:text-right text-xs text-rose-200 font-medium">
+              <p>© {new Date().getFullYear()} My Deal Platform.</p>
+              <p>Made with AI.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Modals */}
       {isAuthModalOpen && (
