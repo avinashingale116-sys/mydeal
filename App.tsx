@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { UserRole, ProductRequirement, RequestStatus, Bid, User, AIAnalysisResult } from './types';
+import { UserRole, ProductRequirement, RequestStatus, Bid, User, AIAnalysisResult, AppNotification } from './types';
 import RequestForm from './components/RequestForm';
 import BidModal from './components/BidModal';
 import AuthModal from './components/AuthModal';
 import PaymentModal from './components/PaymentModal';
 import SellerDashboard from './components/SellerDashboard';
-import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, CheckCircleIcon, SearchIcon, MapPinIcon, XMarkIcon, SparklesIcon, LayoutDashboardIcon } from './components/Icons';
+import NotificationPanel from './components/NotificationPanel';
+import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, CheckCircleIcon, SearchIcon, MapPinIcon, XMarkIcon, SparklesIcon, LayoutDashboardIcon, BellIcon } from './components/Icons';
 
 // --- Constants ---
 const CITY_VENDORS: Record<string, string[]> = {
@@ -63,11 +64,13 @@ const MOCK_REQUESTS: ProductRequirement[] = [
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [requests, setRequests] = useState<ProductRequirement[]>(MOCK_REQUESTS);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
   
   // Modal States
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authInitialRole, setAuthInitialRole] = useState(UserRole.BUYER);
   const [showRequestForm, setShowRequestForm] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   
   // Selection States
   const [selectedRequest, setSelectedRequest] = useState<ProductRequirement | null>(null);
@@ -79,8 +82,7 @@ function App() {
     if (!user) return requests.filter(r => r.status === RequestStatus.OPEN);
     
     if (user.role === UserRole.BUYER) {
-      // Buyers see their own requests primarily, or a feed of public ones?
-      // For this app, let's show "My Requests" at top, then others.
+      // Buyers see their own requests primarily
       return requests.sort((a, b) => {
         if (a.userId === user.id && b.userId !== user.id) return -1;
         if (a.userId !== user.id && b.userId === user.id) return 1;
@@ -94,7 +96,42 @@ function App() {
     }
   }, [user, requests]);
 
+  // Notifications Logic
+  const myNotifications = useMemo(() => {
+    if (!user) return [];
+    // Identify recipient: Vendor Name for sellers, User ID for buyers
+    const recipientId = user.role === UserRole.SELLER ? user.vendorName : user.id;
+    return notifications
+      .filter(n => n.recipient === recipientId)
+      .sort((a, b) => b.timestamp - a.timestamp);
+  }, [user, notifications]);
+
+  const unreadCount = myNotifications.filter(n => !n.read).length;
+
   // Actions
+  const addNotification = (recipient: string, message: string, type: AppNotification['type'], relatedRequestId?: string) => {
+    const newNotif: AppNotification = {
+      id: `notif-${Date.now()}-${Math.random()}`,
+      recipient,
+      message,
+      type,
+      timestamp: Date.now(),
+      read: false,
+      relatedRequestId
+    };
+    setNotifications(prev => [newNotif, ...prev]);
+  };
+
+  const markAsRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const clearNotifications = () => {
+    if (!user) return;
+    const recipientId = user.role === UserRole.SELLER ? user.vendorName : user.id;
+    setNotifications(prev => prev.filter(n => n.recipient !== recipientId));
+  };
+
   const handleLogin = (newUser: User) => {
     setUser(newUser);
     setShowAuthModal(false);
@@ -104,6 +141,7 @@ function App() {
     setUser(null);
     setShowRequestForm(false);
     setSelectedRequest(null);
+    setShowNotifications(false);
   };
 
   const handlePostRequest = (data: AIAnalysisResult & { description: string }) => {
@@ -139,6 +177,19 @@ function App() {
       timestamp: Date.now()
     };
     
+    // Notify other sellers who have bid on this request
+    const competingSellers = new Set(selectedRequest.bids.map(b => b.sellerName));
+    competingSellers.delete(user.vendorName); // Don't notify self
+    
+    competingSellers.forEach(competitor => {
+      addNotification(
+        competitor,
+        `New competitive bid of ₹${amount} placed on "${selectedRequest.title}". Check if you've been outbid!`,
+        'warning',
+        selectedRequest.id
+      );
+    });
+
     const updatedRequests = requests.map(req => {
       if (req.id === selectedRequest.id) {
         return { ...req, bids: [...req.bids, newBid] };
@@ -158,6 +209,14 @@ function App() {
 
   const handlePaymentComplete = (method: 'COD' | 'ONLINE') => {
     if (!selectedRequest || !activeBidToPay) return;
+
+    // Notify the winning seller
+    addNotification(
+      activeBidToPay.sellerName,
+      `Congratulations! Your bid of ₹${activeBidToPay.amount} for "${selectedRequest.title}" was accepted by the buyer.`,
+      'success',
+      selectedRequest.id
+    );
 
     const updatedRequests = requests.map(req => {
       if (req.id === selectedRequest.id) {
@@ -183,16 +242,16 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="flex flex-col min-h-screen relative" onClick={() => showNotifications && setShowNotifications(false)}>
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <nav className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg transition-all">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setSelectedRequest(null)}>
-            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-rose-900/20">
               M
             </div>
-            <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
-              My Deal
+            <span className="text-xl font-extrabold text-white tracking-tight">
+              My Deal <span className="text-rose-500">24</span>
             </span>
           </div>
 
@@ -200,14 +259,28 @@ function App() {
             {user ? (
               <div className="flex items-center gap-4">
                 <div className="hidden md:flex flex-col items-end">
-                  <span className="text-sm font-bold text-slate-800">{user.name}</span>
-                  <span className="text-[10px] uppercase font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  <span className="text-sm font-bold text-slate-100">{user.name}</span>
+                  <span className="text-[10px] uppercase font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700">
                     {user.role}
                   </span>
                 </div>
+                
+                {/* Notification Bell */}
+                <div className="relative">
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setShowNotifications(!showNotifications); }}
+                    className="p-2 text-slate-400 hover:text-white transition-colors relative"
+                  >
+                    <BellIcon className="w-6 h-6" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-slate-900 animate-pulse"></span>
+                    )}
+                  </button>
+                </div>
+
                 <button 
                   onClick={handleLogout}
-                  className="text-sm font-semibold text-slate-500 hover:text-rose-600 transition-colors"
+                  className="text-sm font-semibold text-slate-400 hover:text-rose-400 transition-colors"
                 >
                   Sign Out
                 </button>
@@ -215,14 +288,8 @@ function App() {
             ) : (
               <div className="flex items-center gap-3">
                 <button 
-                  onClick={() => openAuth(UserRole.SELLER)}
-                  className="text-sm font-bold text-slate-600 hover:text-slate-900 px-3 py-2"
-                >
-                  For Sellers
-                </button>
-                <button 
                   onClick={() => openAuth(UserRole.BUYER)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full font-bold text-sm transition-all shadow-lg shadow-slate-200"
+                  className="bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm transition-all shadow-lg shadow-rose-900/20 hover:shadow-rose-900/40 transform hover:-translate-y-0.5"
                 >
                   Sign In
                 </button>
@@ -232,7 +299,19 @@ function App() {
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      {/* Notification Panel */}
+      {showNotifications && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <NotificationPanel 
+            notifications={myNotifications}
+            onClose={() => setShowNotifications(false)}
+            onMarkAsRead={markAsRead}
+            onClearAll={clearNotifications}
+          />
+        </div>
+      )}
+
+      <main className="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
         {/* Buyer View - Post Request / My Requests */}
         {user?.role === UserRole.BUYER && !showRequestForm && (
            <div className="mb-8 flex justify-between items-center bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
@@ -259,7 +338,7 @@ function App() {
         {showRequestForm ? (
           <RequestForm onSubmit={handlePostRequest} onCancel={() => setShowRequestForm(false)} />
         ) : (
-          /* Feed of Requests */
+          /* Content Area */
           <div className="space-y-6">
             {!user && (
               <div className="text-center py-24 mb-12 relative overflow-visible">
@@ -306,7 +385,8 @@ function App() {
               </div>
             )}
             
-            {(user?.role !== UserRole.SELLER) && (
+            {/* ONLY show feed when user is logged in (hides mock fridge/tyre/AC from landing page) */}
+            {user && (user?.role !== UserRole.SELLER) && (
                <div className="grid grid-cols-1 gap-6">
                  {filteredRequests.map(req => {
                    const isOwner = user?.id === req.userId;
@@ -411,6 +491,54 @@ function App() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-slate-400 py-12 mt-auto">
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+           <div>
+              <div className="flex items-center gap-2 mb-4 text-white">
+                 <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center font-bold">M</div>
+                 <span className="text-xl font-bold">My Deal 24</span>
+              </div>
+              <p className="text-sm leading-relaxed text-slate-400 max-w-xs">
+                The smartest way to buy home appliances and more. We connect buyers with local verified sellers to ensure the best prices without the hassle.
+              </p>
+           </div>
+           <div>
+              <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">About Us</h3>
+              <ul className="space-y-3 text-sm font-medium">
+                 <li><a href="#" className="hover:text-rose-500 transition-colors">Our Story</a></li>
+                 <li><a href="#" className="hover:text-rose-500 transition-colors">How it Works</a></li>
+                 <li><a href="#" className="hover:text-rose-500 transition-colors">Verified Sellers</a></li>
+                 <li><a href="#" className="hover:text-rose-500 transition-colors">Careers</a></li>
+              </ul>
+           </div>
+           <div>
+              <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">Contact</h3>
+              <ul className="space-y-3 text-sm font-medium">
+                 <li className="flex items-center gap-2">
+                   <span className="block w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                   support@mydeal24.com
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="block w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                   <a href="#" className="hover:text-green-400 transition-colors">Contact us on WhatsApp</a>
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="block w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                   +91 1800 123 4567
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="block w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                   Satara, Maharashtra, India
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div className="max-w-6xl mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-center text-xs font-medium text-slate-500">
+           <p>&copy; {new Date().getFullYear()} My Deal 24. All rights reserved.</p>
+        </div>
+      </footer>
 
       {/* Modals */}
       {showAuthModal && (

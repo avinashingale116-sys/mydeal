@@ -57,3 +57,13 @@ export interface BidSuggestion {
   reasoning: string;
   winProbability: string;
 }
+
+export interface AppNotification {
+  id: string;
+  recipient: string; // vendorName for sellers, userId for buyers
+  message: string;
+  type: 'info' | 'success' | 'warning';
+  timestamp: number;
+  read: boolean;
+  relatedRequestId?: string;
+}
