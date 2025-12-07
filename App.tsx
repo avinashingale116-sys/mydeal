@@ -309,7 +309,16 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
-            {/* City Selector */}
+            
+            {/* Home Tab - Added */}
+            <button 
+              onClick={() => {setViewState('LIST'); setSelectedRequestId(null);}}
+              className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all hidden md:block ${viewState === 'LIST' && !selectedRequestId ? 'text-rose-600 bg-rose-50' : 'text-slate-500 hover:text-slate-900'}`}
+            >
+              Home
+            </button>
+
+            {/* City Selector - Bolder */}
             <div className="relative group flex-shrink-0">
               <div className="flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-800 px-3 py-2 rounded-lg cursor-pointer hover:bg-rose-100 transition-colors">
                 <MapPinIcon className="w-4 h-4 text-rose-600" />
@@ -317,7 +326,7 @@ export default function App() {
                   value={currentCity}
                   onChange={(e) => { setCurrentCity(e.target.value); setViewState('LIST'); setSelectedRequestId(null); }}
                   disabled={currentUser?.role === UserRole.SELLER}
-                  className="bg-transparent font-bold text-sm outline-none cursor-pointer appearance-none pr-4 disabled:cursor-not-allowed"
+                  className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 disabled:cursor-not-allowed uppercase tracking-wide"
                 >
                   {CITIES.map(city => (
                     <option key={city} value={city}>{city}</option>
@@ -335,7 +344,7 @@ export default function App() {
                  <select 
                    value={currentVendor}
                    onChange={(e) => setCurrentVendor(e.target.value)}
-                   className="bg-transparent font-bold text-sm outline-none cursor-pointer appearance-none pr-4 max-w-[150px] md:max-w-[200px] truncate"
+                   className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 max-w-[150px] md:max-w-[200px] truncate uppercase tracking-wide"
                  >
                    {CITY_VENDORS[currentCity]?.map(vendor => (
                      <option key={vendor} value={vendor}>{vendor}</option>
@@ -410,13 +419,13 @@ export default function App() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${
+                  className={`px-6 py-2.5 rounded-full text-sm font-extrabold tracking-wide transition-all border ${
                     selectedCategory === cat
                       ? 'bg-rose-600 text-white border-rose-600 shadow-lg shadow-rose-200'
                       : 'bg-white text-slate-500 border-slate-200 hover:border-rose-300 hover:text-rose-600'
                   }`}
                 >
-                  {cat}
+                  {cat.toUpperCase()}
                 </button>
               ))}
             </div>
@@ -510,365 +519,4 @@ export default function App() {
                         <div className="w-16 h-16 bg-rose-50 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4">
                           <PlusIcon className="w-8 h-8" />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-900">No requests in {currentCity}</h3>
-                        <p className="text-slate-500 max-w-sm mx-auto mt-2 mb-6">Create a request using our AI tool to find the best price.</p>
-                        <button 
-                          onClick={() => currentUser ? setViewState('CREATE') : setIsAuthModalOpen(true)}
-                          className="text-rose-600 font-bold hover:text-rose-700 hover:underline"
-                        >
-                          Create request
-                        </button>
-                     </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {viewState === 'CREATE' && (
-              <RequestForm 
-                onSubmit={handleCreateRequest} 
-                onCancel={() => setViewState('LIST')} 
-              />
-            )}
-
-            {viewState === 'DETAILS' && selectedRequest && (
-              <div className="animate-in slide-in-from-right-8 duration-300">
-                <button 
-                  onClick={() => setViewState('LIST')}
-                  className="text-slate-500 hover:text-rose-600 font-bold mb-6 flex items-center gap-2 group transition-colors"
-                >
-                  <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to My Requests
-                </button>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Left Column: Details */}
-                  <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                      <div className="flex gap-6 items-start mb-6">
-                        <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-100 hidden sm:block shadow-inner">
-                          <img src={getCategoryImage(selectedRequest.category)} alt={selectedRequest.category} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between mb-2">
-                            <h1 className="text-3xl font-bold text-slate-900 leading-tight">{selectedRequest.title}</h1>
-                            <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase border whitespace-nowrap ml-2 ${getCategoryColor(selectedRequest.category)}`}>
-                              {selectedRequest.category}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 text-slate-500 text-sm font-semibold">
-                              <MapPinIcon className="w-4 h-4"/> {selectedRequest.location}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {Object.entries(selectedRequest.specs).map(([k, v]) => (
-                          <div key={k} className="flex flex-col bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 min-w-[80px]">
-                            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-0.5">{k.replace(/([A-Z])/g, ' $1')}</span>
-                            <span className="font-semibold text-slate-800 text-sm">{String(v)}</span>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="prose prose-slate max-w-none">
-                        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-2">Description</h4>
-                        <p className="text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 italic">
-                          "{selectedRequest.description}"
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Bids Chart */}
-                    {selectedRequest.bids.length > 0 && (
-                      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                        <div className="flex items-center justify-between mb-8">
-                          <h3 className="font-bold text-xl text-slate-900">Bid Analysis</h3>
-                          <div className="text-xs font-medium px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full">
-                            {selectedRequest.bids.length} Active Offers
-                          </div>
-                        </div>
-                        <div className="h-72 w-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={selectedRequest.bids.map(b => ({ name: b.sellerName.split(' ')[0], amount: b.amount })).sort((a,b) => a.amount - b.amount)}>
-                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                              <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} dy={10} />
-                              <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
-                              <Tooltip 
-                                cursor={{fill: '#f8fafc'}}
-                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                                itemStyle={{ fontWeight: 600, color: '#334155' }}
-                              />
-                              <Bar dataKey="amount" radius={[6, 6, 0, 0]}>
-                                {selectedRequest.bids.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : '#6366f1'} />
-                                ))}
-                              </Bar>
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Bids List */}
-                    <div className="space-y-4">
-                      <h3 className="font-bold text-xl text-slate-900 px-2">All Offers</h3>
-                      {selectedRequest.bids.sort((a, b) => a.amount - b.amount).map((bid, idx) => (
-                        <div key={bid.id} className={`p-6 rounded-2xl border transition-all ${idx === 0 ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-sm' : 'bg-white border-slate-200'}`}>
-                          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                             <div className="flex-1">
-                               <div className="flex items-center gap-2 mb-2">
-                                 <span className="font-bold text-slate-900 text-lg">{bid.sellerName}</span>
-                                 {idx === 0 && (
-                                   <span className="bg-green-100 text-green-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wide flex items-center gap-1">
-                                     <CheckCircleIcon className="w-3 h-3"/> Best Price
-                                   </span>
-                                 )}
-                               </div>
-                               <p className="text-sm text-slate-600 bg-white/50 p-2 rounded-lg border border-black/5 inline-block min-w-[200px]">
-                                 "{bid.notes}"
-                               </p>
-                               <div className="flex items-center gap-2 mt-3 text-xs font-medium text-slate-500">
-                                 <ClockIcon className="w-3 h-3" /> Delivery in {bid.deliveryDays} days
-                               </div>
-                             </div>
-                             <div className="text-right">
-                               <div className="text-3xl font-extrabold text-slate-900">${bid.amount}</div>
-                               <button 
-                                 onClick={() => initiatePayment(bid)}
-                                 className="bg-slate-900 hover:bg-rose-600 text-white text-xs font-bold py-2 px-4 rounded-lg mt-3 transition-colors shadow-lg shadow-slate-200 hover:shadow-rose-200"
-                               >
-                                 Accept Offer
-                               </button>
-                             </div>
-                          </div>
-                        </div>
-                      ))}
-                      {selectedRequest.bids.length === 0 && (
-                        <div className="text-center py-12 text-slate-400 italic bg-white rounded-3xl border border-slate-100">
-                          Waiting for sellers to compete for your order...
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right Column: Stats */}
-                  <div className="space-y-6">
-                     <div className="bg-gradient-to-br from-slate-900 to-rose-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                        <p className="text-rose-200 text-xs font-bold uppercase tracking-widest mb-2">Target Budget</p>
-                        <div className="text-4xl font-extrabold tracking-tight">${selectedRequest.estimatedMarketPrice.max}</div>
-                        
-                        <div className="mt-6 pt-6 border-t border-white/10">
-                          <p className="text-rose-200 text-xs font-bold uppercase tracking-widest mb-1">Market Estimate</p>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-semibold">${selectedRequest.estimatedMarketPrice.min}</span>
-                            <span className="text-rose-400">-</span>
-                            <span className="text-lg font-semibold">${selectedRequest.estimatedMarketPrice.max}</span>
-                          </div>
-                        </div>
-                     </div>
-                     
-                     <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                        <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                          Request Status
-                        </h4>
-                        <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-100 px-4 py-3 rounded-xl mb-4">
-                           <CheckCircleIcon className="w-5 h-5" />
-                           <span className="font-bold text-sm">Active & Accepting Bids</span>
-                        </div>
-                        <div className="text-sm flex justify-between items-center text-slate-500 font-medium">
-                          <span>Expires in:</span>
-                          <span className="text-slate-900 font-bold bg-slate-100 px-2 py-1 rounded">48 Hours</span>
-                        </div>
-                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* --- SELLER VIEW --- */}
-        {activeRole === UserRole.SELLER && (
-          <div className="animate-in fade-in duration-500">
-             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                  <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Marketplace in {currentCity}</h1>
-                  <p className="text-slate-500 text-lg">Find active buyer requests and submit your best price to win.</p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
-                   {/* Dashboard Toggle */}
-                   <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
-                      <button 
-                        onClick={() => setViewState('LIST')}
-                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewState === 'LIST' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                      >
-                        Marketplace
-                      </button>
-                      <button 
-                        onClick={() => setViewState('DASHBOARD')}
-                        className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewState === 'DASHBOARD' ? 'bg-emerald-50 text-emerald-700 shadow-sm border border-emerald-100' : 'text-slate-500 hover:text-slate-700'}`}
-                      >
-                         <LayoutDashboardIcon className="w-3 h-3" /> Dashboard
-                      </button>
-                   </div>
-                  
-                  <div className="bg-emerald-50 text-emerald-800 px-4 py-2 rounded-lg font-bold text-sm border border-emerald-100 flex items-center gap-2">
-                    <StoreIcon className="w-4 h-4"/>
-                    <span>Bidding as: <span className="text-emerald-900 underline">{currentUser?.vendorName || currentVendor}</span></span>
-                  </div>
-                </div>
-             </div>
-             
-             {viewState === 'DASHBOARD' && (
-               <SellerDashboard 
-                 sellerName={currentUser?.vendorName || currentVendor} 
-                 requests={requests}
-               />
-             )}
-
-             {viewState === 'LIST' && (
-               <>
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredRequests.map(req => {
-                      const currentLowest = getLowestBid(req.bids);
-                      return (
-                        <div key={req.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-emerald-200 transition-all duration-300 flex flex-col group hover:-translate-y-1 overflow-hidden">
-                          {/* Top Image */}
-                          <div className="h-40 w-full overflow-hidden bg-slate-100 relative">
-                              <img 
-                                src={getCategoryImage(req.category)} 
-                                alt={req.category} 
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                              />
-                              <div className="absolute top-3 left-3">
-                                <span className={`px-2.5 py-1 text-[10px] font-bold rounded-md uppercase border shadow-sm bg-white/90 ${getCategoryColor(req.category)}`}>
-                                  {req.category}
-                                </span>
-                              </div>
-                              <div className="absolute top-3 right-3">
-                                <span className="text-xs font-bold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-sm">
-                                  {formatDate(req.createdAt)}
-                                </span>
-                              </div>
-                          </div>
-
-                          <div className="p-6 flex-1 flex flex-col">
-                              <h3 className="font-bold text-lg text-slate-900 mb-3 leading-tight group-hover:text-emerald-700 transition-colors line-clamp-2">{req.title}</h3>
-                              
-                              <div className="flex flex-wrap gap-1.5 mb-6">
-                                {Object.entries(req.specs).slice(0, 3).map(([k,v]) => (
-                                  <span key={k} className="text-[10px] font-medium text-slate-600 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">{String(v)}</span>
-                                ))}
-                              </div>
-                              
-                              <div className="mt-auto grid grid-cols-2 gap-2">
-                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Max Budget</p>
-                                  <p className="font-bold text-slate-900 text-lg">${req.estimatedMarketPrice.max}</p>
-                                </div>
-                                <div className="bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
-                                  <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide">Current Low</p>
-                                  <p className={`font-bold text-lg ${currentLowest ? 'text-emerald-700' : 'text-slate-400'}`}>
-                                    {currentLowest ? `$${currentLowest}` : '-'}
-                                  </p>
-                                </div>
-                              </div>
-                          </div>
-                          <div className="p-4 border-t border-slate-50">
-                              <button 
-                                onClick={() => initiateBid(req.id)}
-                                className="w-full bg-slate-900 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-slate-200 hover:shadow-emerald-200 transition-all flex justify-center items-center gap-2"
-                              >
-                                <TagIcon className="w-4 h-4" />
-                                Place Bid
-                              </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                 </div>
-                 {filteredRequests.length === 0 && (
-                    <div className="text-center py-20 bg-white/50 rounded-3xl">
-                      <p className="text-slate-500 font-medium">No open requests in {currentCity} yet.</p>
-                    </div>
-                 )}
-               </>
-             )}
-          </div>
-        )}
-
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-10 mt-10">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="bg-gradient-to-tr from-rose-600 to-red-600 text-white p-1.5 rounded-lg">
-                <TrendingDownIcon className="w-4 h-4" />
-              </div>
-              <span className="font-extrabold text-xl text-white">My Deal</span>
-            </div>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
-              The smartest way to buy. Post your requirements, let sellers compete, and get the best market price for Fridges, ACs, TVs and more.
-            </p>
-          </div>
-          
-          <div>
-            <h4 className="font-bold text-white mb-4">Categories</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-rose-400 transition-colors">Refrigerators</a></li>
-              <li><a href="#" className="hover:text-rose-400 transition-colors">Air Conditioners</a></li>
-              <li><a href="#" className="hover:text-rose-400 transition-colors">Televisions</a></li>
-              <li><a href="#" className="hover:text-rose-400 transition-colors">Car Tyres</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-white mb-4">Company</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-rose-400 transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-rose-400 transition-colors">How it Works</a></li>
-              <li><a href="#" className="hover:text-rose-400 transition-colors">Seller Rules</a></li>
-              <li><a href="#" className="hover:text-rose-400 transition-colors">Privacy Policy</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-6xl mx-auto px-4 mt-10 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
-          &copy; {new Date().getFullYear()} My Deal Inc. All rights reserved.
-        </div>
-      </footer>
-
-      {/* --- MODALS --- */}
-      {isAuthModalOpen && (
-        <AuthModal
-          onClose={() => setIsAuthModalOpen(false)}
-          onLogin={handleLogin}
-          initialRole={activeRole}
-          cityVendors={CITY_VENDORS}
-        />
-      )}
-
-      {isBidModalOpen && selectedRequest && (
-        <BidModal 
-          request={selectedRequest}
-          sellerName={currentUser?.vendorName || currentVendor}
-          onClose={() => setIsBidModalOpen(false)}
-          onSubmit={handlePlaceBid}
-        />
-      )}
-
-      {isPaymentModalOpen && selectedRequest && selectedBidForPayment && (
-        <PaymentModal
-          request={selectedRequest}
-          bid={selectedBidForPayment}
-          onClose={() => setIsPaymentModalOpen(false)}
-          onConfirm={handleConfirmPayment}
-        />
-      )}
-
-    </div>
-  );
-}
+                        <h3 className
