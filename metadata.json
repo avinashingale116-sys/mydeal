@@ -1,5 +1,5 @@
 {
-  "name": "My Deal: Reverse Auction Marketplace",
+  "name": "My Deal",
   "description": "A platform where buyers submit requirements for products (AC, Fridge, TV, Tyres) and sellers bid to offer the lowest price. Features AI-powered specification assistance.",
   "requestFramePermissions": []
 }
