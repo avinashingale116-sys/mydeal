@@ -15,6 +15,8 @@ const CITY_VENDORS: Record<string, string[]> = {
   'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES']
 };
 
+const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Washing Machine', 'Car Tyres'];
+
 // --- Mock Data ---
 const MOCK_REQUESTS: ProductRequirement[] = [];
 
@@ -25,6 +27,7 @@ function App() {
   const [requests, setRequests] = useState<ProductRequirement[]>(MOCK_REQUESTS);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [currentCity, setCurrentCity] = useState('Satara');
+  const [currentCategory, setCurrentCategory] = useState('All');
   
   // View State
   const [view, setView] = useState<ViewState>('landing');
@@ -41,20 +44,37 @@ function App() {
 
   // Derived State
   const filteredRequests = useMemo(() => {
-    if (!user) return requests.filter(r => r.status === RequestStatus.OPEN);
+    let result = requests;
+
+    // Filter by Category
+    if (currentCategory !== 'All') {
+      result = result.filter(r => {
+        const cat = r.category.toLowerCase();
+        const filter = currentCategory.toLowerCase();
+        
+        // Smart matching for common terms
+        if (filter === 'fridge') return cat.includes('refrigerator') || cat.includes('fridge');
+        if (filter === 'ac') return cat.includes('air condition') || cat.includes('ac');
+        if (filter === 'tv') return cat.includes('television') || cat.includes('tv');
+        
+        return cat.includes(filter);
+      });
+    }
+
+    if (!user) return result.filter(r => r.status === RequestStatus.OPEN);
     
     if (user.role === UserRole.BUYER) {
       // Buyers ONLY see their own requests
-      return requests
+      return result
         .filter(req => req.userId === user.id)
         .sort((a, b) => b.createdAt - a.createdAt);
     } else {
       // Sellers see requests in their city or all open requests
-      return requests
+      return result
         .filter(r => r.status === RequestStatus.OPEN || (r.status === RequestStatus.CLOSED && r.winningBidId && r.bids.some(b => b.sellerName === user.vendorName)))
         .sort((a, b) => b.createdAt - a.createdAt);
     }
-  }, [user, requests]);
+  }, [user, requests, currentCategory]);
 
   // Notifications Logic
   const myNotifications = useMemo(() => {
@@ -107,6 +127,7 @@ function App() {
     setView('landing');
     setSelectedRequest(null);
     setShowNotifications(false);
+    setCurrentCategory('All');
   };
 
   const handlePostRequest = (data: AIAnalysisResult & { description: string }) => {
@@ -238,6 +259,23 @@ function App() {
                </div>
             </div>
 
+            {/* Category Selector */}
+            <div className="relative group hidden sm:block">
+               <div className="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 rounded-full px-4 py-1.5 border border-slate-700/50 transition-all cursor-pointer">
+                  <TagIcon className="w-4 h-4 text-orange-500" />
+                  <select 
+                      value={currentCategory}
+                      onChange={(e) => setCurrentCategory(e.target.value)}
+                      className="bg-transparent text-slate-200 text-sm font-bold outline-none appearance-none cursor-pointer pr-1"
+                  >
+                      {CATEGORIES.map(cat => (
+                          <option key={cat} value={cat} className="bg-slate-900 text-white py-2">{cat}</option>
+                      ))}
+                  </select>
+                  <ChevronDownIcon className="w-3 h-3 text-slate-500 pointer-events-none" />
+               </div>
+            </div>
+
             {/* Navigation Tabs */}
             {user && (
               <div className="flex items-center gap-2">
@@ -342,10 +380,10 @@ function App() {
                 Submit your requirement. Local verified sellers in <span className="font-bold text-slate-800">{currentCity}</span> compete to give you the lowest price.
               </p>
 
-              <div className="mb-10 flex justify-center">
+              <div className="mb-10 flex flex-col sm:flex-row justify-center items-center gap-4">
                   <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold shadow-sm">
                       <MapPinIcon className="w-4 h-4 text-rose-500" />
-                      Current Location: 
+                      Location: 
                       <select 
                           value={currentCity}
                           onChange={(e) => setCurrentCity(e.target.value)}
@@ -353,6 +391,20 @@ function App() {
                       >
                             {Object.keys(CITY_VENDORS).map(city => (
                               <option key={city} value={city}>{city}</option>
+                          ))}
+                      </select>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold shadow-sm">
+                      <TagIcon className="w-4 h-4 text-orange-500" />
+                      Looking for: 
+                      <select 
+                          value={currentCategory}
+                          onChange={(e) => setCurrentCategory(e.target.value)}
+                          className="bg-transparent border-none outline-none text-slate-900 font-bold cursor-pointer"
+                      >
+                            {CATEGORIES.map(cat => (
+                              <option key={cat} value={cat}>{cat}</option>
                           ))}
                       </select>
                   </div>
@@ -421,7 +473,9 @@ function App() {
                           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                               <PlusIcon className="w-8 h-8" />
                           </div>
-                          <h3 className="text-lg font-bold text-slate-900">No requests in {currentCity}</h3>
+                          <h3 className="text-lg font-bold text-slate-900">
+                              {currentCategory === 'All' ? `No requests in ${currentCity}` : `No ${currentCategory} requests`}
+                          </h3>
                           <p className="text-slate-500 mb-6 max-w-xs mx-auto">Post your first requirement to start getting bids from local sellers.</p>
                           <button 
                               onClick={() => setView('create_request')}
@@ -525,11 +579,15 @@ function App() {
                   
                   {/* Seller Feed of Requests */}
                   <div className="mt-12">
-                     <h3 className="text-xl font-bold text-slate-900 mb-6">Open Requests in {currentCity}</h3>
+                     <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-slate-900">
+                            {currentCategory === 'All' ? `Open Requests in ${currentCity}` : `Open ${currentCategory} Requests`}
+                        </h3>
+                     </div>
                      <div className="grid grid-cols-1 gap-6">
                         {filteredRequests.filter(r => r.status === RequestStatus.OPEN).length === 0 ? (
                            <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-slate-300">
-                              <p className="text-slate-400">No open requests available at the moment.</p>
+                              <p className="text-slate-400">No open requests available for this category.</p>
                            </div>
                         ) : (
                            filteredRequests.filter(r => r.status === RequestStatus.OPEN).map(req => {
