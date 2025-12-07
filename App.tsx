@@ -5,7 +5,7 @@ import BidModal from './components/BidModal';
 import AuthModal from './components/AuthModal';
 import PaymentModal from './components/PaymentModal';
 import SellerDashboard from './components/SellerDashboard';
-import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, TrendingDownIcon, CheckCircleIcon, SearchIcon, MapPinIcon, LayoutDashboardIcon } from './components/Icons';
+import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, TrendingDownIcon, CheckCircleIcon, SearchIcon, MapPinIcon, LayoutDashboardIcon, XMarkIcon } from './components/Icons';
 import { BarChart, Bar, Tooltip, ResponsiveContainer, Cell, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 // --- Constants ---
@@ -53,152 +53,46 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     userId: 'user-1',
     title: 'LG 1.5 Ton 5 Star Split AC',
     category: 'AC',
-    description: 'Dual Inverter Split AC, Copper Condenser, 5 Star rating for bedroom.',
-    specs: { brand: 'LG', capacity: '1.5 Ton', type: 'Split', energyRating: '5 Star' },
+    description: 'Dual Inverter Compressor, AI Convertible 6-in-1, HD Filter with Anti-Virus Protection. Looking for 2024 model.',
+    specs: { brand: 'LG', capacity: '1.5 Ton', energyRating: '5 Star', type: 'Split' },
     estimatedMarketPrice: { min: 42000, max: 48000 },
-    bids: [
-       { id: 'bid-4', sellerName: 'ORANGE HOME APPLIANCES', amount: 43500, deliveryDays: 1, notes: 'Free stabilizer included', timestamp: Date.now() - 20000 },
-    ],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 10000,
-    location: 'Kolhapur'
-  },
-  {
-    id: 'req-4',
-    userId: 'user-3',
-    title: 'Sony Bravia 55 inch 4K Google TV',
-    category: 'TV',
-    description: 'Latest model with XR processor and PS5 gaming features.',
-    specs: { brand: 'Sony', size: '55 inch', resolution: '4K', type: 'LED' },
-    estimatedMarketPrice: { min: 75000, max: 85000 },
     bids: [],
     status: RequestStatus.OPEN,
-    createdAt: Date.now() - 800000,
+    createdAt: Date.now() - 20000,
     location: 'Satara'
-  },
-  {
-    id: 'req-5',
-    userId: 'user-4',
-    title: 'Apple iPhone 15 Pro Max (256GB)',
-    category: 'Mobile',
-    description: 'Natural Titanium color, brand new sealed box required. Urgent requirement.',
-    specs: { brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', color: 'Natural Titanium' },
-    estimatedMarketPrice: { min: 140000, max: 155000 },
-    bids: [],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 5000,
-    location: 'Pune'
-  },
-  {
-    id: 'req-6',
-    userId: 'user-5',
-    title: 'Samsung Galaxy S24 Ultra',
-    category: 'Mobile',
-    description: 'Looking for the AI phone, 512GB variant in Titanium Gray.',
-    specs: { brand: 'Samsung', model: 'S24 Ultra', storage: '512GB', color: 'Titanium Gray' },
-    estimatedMarketPrice: { min: 115000, max: 130000 },
-    bids: [
-       { id: 'bid-5', sellerName: 'REAL HOME APPLIANCES', amount: 118000, deliveryDays: 1, notes: 'Includes Galaxy Watch offer', timestamp: Date.now() - 1000 },
-    ],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 60000,
-    location: 'Pune'
   }
 ];
 
-// Helper for category colors
-const getCategoryColor = (category: string) => {
-  const map: Record<string, string> = {
-    'Fridge': 'bg-sky-100 text-sky-700 border-sky-200',
-    'AC': 'bg-cyan-100 text-cyan-700 border-cyan-200',
-    'TV': 'bg-violet-100 text-violet-700 border-violet-200',
-    'Tyres': 'bg-stone-100 text-stone-700 border-stone-200',
-    'Automotive': 'bg-orange-100 text-orange-700 border-orange-200',
-    'Home Appliances': 'bg-blue-100 text-blue-700 border-blue-200',
-    'Mobile': 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200',
-  };
-  return map[category] || 'bg-slate-100 text-slate-700 border-slate-200';
-};
-
-// Helper for category images
-const getCategoryImage = (category: string) => {
-  const map: Record<string, string> = {
-    'Fridge': 'https://images.unsplash.com/photo-1571175443880-49e1d58b794a?auto=format&fit=crop&w=400&q=80',
-    'AC': 'https://images.unsplash.com/photo-1612151855475-877969f4a6cc?auto=format&fit=crop&w=400&q=80',
-    'TV': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=400&q=80',
-    'Tyres': 'https://images.unsplash.com/photo-1578844251758-2f71da645217?auto=format&fit=crop&w=400&q=80',
-    'Mobile': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80',
-  };
-  return map[category] || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=400&q=80';
-};
-
-const CATEGORIES = ['All', 'Fridge', 'AC', 'TV', 'Tyres', 'Mobile'];
-
-export default function App() {
-  const [activeRole, setActiveRole] = useState<UserRole>(UserRole.BUYER);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  
+const App = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [requests, setRequests] = useState<ProductRequirement[]>(MOCK_REQUESTS);
-  
-  // Navigation State
-  const [viewState, setViewState] = useState<'LIST' | 'CREATE' | 'DETAILS' | 'DASHBOARD'>('LIST');
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedBidForPayment, setSelectedBidForPayment] = useState<Bid | null>(null);
-  
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [currentCity, setCurrentCity] = useState(CITIES[0]);
-  const [currentVendor, setCurrentVendor] = useState(CITY_VENDORS[CITIES[0]][0]);
+  const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
+  const [activeBidRequest, setActiveBidRequest] = useState<ProductRequirement | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState<{req: ProductRequirement, bid: Bid} | null>(null);
 
-  // Update vendor when city changes or user logs in
-  useEffect(() => {
-    if (currentUser?.role === UserRole.SELLER && currentUser.vendorName && currentUser.city) {
-      setCurrentCity(currentUser.city);
-      setCurrentVendor(currentUser.vendorName);
-    } else {
-      const vendors = CITY_VENDORS[currentCity];
-      if (vendors && vendors.length > 0) {
-        setCurrentVendor(vendors[0]);
-      }
-    }
-  }, [currentCity, currentUser]);
+  // Footer Modal States
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
-  // Derived State
-  const selectedRequest = useMemo(() => 
-    requests.find(r => r.id === selectedRequestId) || null
-  , [requests, selectedRequestId]);
+  // Derived state
+  const myRequests = useMemo(() => {
+    return user?.role === UserRole.BUYER 
+      ? requests.filter(r => r.userId === user.id)
+      : [];
+  }, [requests, user]);
 
-  const filteredRequests = useMemo(() => {
-    // Filter out CLOSED deals from the marketplace list if looking at standard list
-    let filtered = requests.filter(r => r.location === currentCity);
-    
-    // In marketplace, we only show OPEN requests usually, but for demo let's show all except maybe fulfilled ones unless searching
-    if (viewState === 'LIST') {
-       filtered = filtered.filter(r => r.status === RequestStatus.OPEN);
-    }
+  const marketFeed = useMemo(() => {
+    return user?.role === UserRole.SELLER
+      ? requests.filter(r => r.location === user.city && r.status === RequestStatus.OPEN)
+      : [];
+  }, [requests, user]);
 
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(r => r.category === selectedCategory);
-    }
-    return filtered;
-  }, [requests, selectedCategory, currentCity, viewState]);
-
-  const toggleRole = () => {
-    setActiveRole(prev => prev === UserRole.BUYER ? UserRole.SELLER : UserRole.BUYER);
-    setViewState('LIST');
-    setSelectedRequestId(null);
-  };
-
-  const handleCreateRequest = (data: any) => {
-    if (!currentUser) {
-      setIsAuthModalOpen(true);
-      return;
-    }
+  const handlePostRequest = (data: any) => {
+    if (!user) return;
     const newRequest: ProductRequirement = {
       id: `req-${Date.now()}`,
-      userId: currentUser.id,
+      userId: user.id,
       title: data.title,
       category: data.category,
       description: data.description,
@@ -207,32 +101,18 @@ export default function App() {
       bids: [],
       status: RequestStatus.OPEN,
       createdAt: Date.now(),
-      location: currentCity 
+      location: 'Satara' // Defaulting to Satara for demo, in real app would be user location
     };
     setRequests([newRequest, ...requests]);
-    setViewState('LIST');
+    setIsRequestFormOpen(false);
   };
 
-  const initiateBid = (reqId: string) => {
-    if (!currentUser) {
-      setIsAuthModalOpen(true);
-      return;
-    }
-    setSelectedRequestId(reqId);
-    setIsBidModalOpen(true);
-  };
-
-  const handlePlaceBid = (amount: number, deliveryDays: number, notes: string) => {
-    if (!selectedRequest) return;
+  const handleBidSubmit = (amount: number, deliveryDays: number, notes: string) => {
+    if (!user || !activeBidRequest) return;
     
-    // Use logged in vendor name if available, else selected dropdown
-    const bidderName = currentUser?.role === UserRole.SELLER && currentUser.vendorName 
-      ? currentUser.vendorName 
-      : currentVendor;
-
     const newBid: Bid = {
       id: `bid-${Date.now()}`,
-      sellerName: bidderName, 
+      sellerName: user.vendorName || 'Unknown Vendor',
       amount,
       deliveryDays,
       notes,
@@ -240,539 +120,422 @@ export default function App() {
     };
 
     const updatedRequests = requests.map(req => {
-      if (req.id === selectedRequest.id) {
+      if (req.id === activeBidRequest.id) {
         return { ...req, bids: [...req.bids, newBid] };
       }
       return req;
     });
 
     setRequests(updatedRequests);
-    setIsBidModalOpen(false);
+    setActiveBidRequest(null);
   };
 
-  const initiatePayment = (bid: Bid) => {
-    setSelectedBidForPayment(bid);
-    setIsPaymentModalOpen(true);
+  const handleAcceptBid = (req: ProductRequirement, bid: Bid) => {
+     setShowPaymentModal({ req, bid });
   };
 
-  const handleConfirmPayment = (method: 'COD' | 'ONLINE') => {
-    if (!selectedRequest || !selectedBidForPayment) return;
-
-    const updatedRequests = requests.map(req => {
-      if (req.id === selectedRequest.id) {
-        return { 
-          ...req, 
-          status: RequestStatus.CLOSED, 
-          winningBidId: selectedBidForPayment.id,
-          paymentMethod: method
-        };
+  const handlePaymentConfirm = (method: 'COD' | 'ONLINE') => {
+    if (!showPaymentModal) return;
+    const { req, bid } = showPaymentModal;
+    
+    const updatedRequests = requests.map(r => {
+      if (r.id === req.id) {
+        return { ...r, status: RequestStatus.CLOSED, winningBidId: bid.id, paymentMethod: method };
       }
-      return req;
+      return r;
     });
-
     setRequests(updatedRequests);
-    setIsPaymentModalOpen(false);
-    setSelectedBidForPayment(null);
-    setViewState('LIST'); // Return to list after closing deal
+    setShowPaymentModal(null);
   };
 
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    setActiveRole(user.role);
-    if (user.role === UserRole.SELLER && user.city) {
-      setCurrentCity(user.city);
-    }
+  const getTimeAgo = (timestamp: number) => {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
   };
-
-  // --- Render Helpers ---
-
-  const getLowestBid = (bids: Bid[]) => {
-    if (bids.length === 0) return null;
-    return Math.min(...bids.map(b => b.amount));
-  };
-
-  const formatDate = (ts: number) => new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      
       {/* Header */}
-      <header className="bg-gradient-to-r from-rose-600 to-orange-600 shadow-lg sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 group cursor-pointer flex-shrink-0" onClick={() => {setViewState('LIST'); setSelectedRequestId(null);}}>
-            <div className="bg-white text-rose-600 p-2 rounded-xl shadow-md group-hover:scale-110 transition-transform">
-              <TrendingDownIcon className="w-5 h-5" />
+      <header className="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-rose-100">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-orange-500 rounded-xl shadow-lg shadow-rose-200 flex items-center justify-center text-white font-bold text-xl">
+              M
             </div>
-            <span className="font-extrabold text-2xl text-white tracking-tight hidden md:block text-shadow-sm">
+            <span className="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
               My Deal
             </span>
           </div>
 
-          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2">
-            
-            {/* Home Tab */}
-            <button 
-              onClick={() => {setViewState('LIST'); setSelectedRequestId(null);}}
-              className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all hidden md:block ${viewState === 'LIST' && !selectedRequestId ? 'bg-white text-rose-600 shadow-md' : 'text-rose-100 hover:bg-white/10 hover:text-white'}`}
-            >
-              HOME
-            </button>
-
-            {/* Dashboard Tab (Seller Only) */}
-            {activeRole === UserRole.SELLER && (
-              <button 
-                onClick={() => currentUser ? setViewState('DASHBOARD') : setIsAuthModalOpen(true)}
-                className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all flex items-center gap-2 ${viewState === 'DASHBOARD' ? 'bg-white text-rose-600 shadow-md' : 'text-rose-100 hover:bg-white/10 hover:text-white'}`}
-              >
-                <LayoutDashboardIcon className="w-4 h-4"/> DASHBOARD
-              </button>
-            )}
-
-            {/* City Selector */}
-            <div className="relative group flex-shrink-0">
-              <div className="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-white/20 transition-colors backdrop-blur-sm">
-                <MapPinIcon className="w-4 h-4 text-white" />
-                <select 
-                  value={currentCity}
-                  onChange={(e) => { setCurrentCity(e.target.value); setViewState('LIST'); setSelectedRequestId(null); }}
-                  disabled={currentUser?.role === UserRole.SELLER}
-                  className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 disabled:cursor-not-allowed uppercase tracking-wide text-white [&>option]:text-slate-900"
-                >
-                  {CITIES.map(city => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                </select>
-                <span className="absolute right-3 pointer-events-none text-white/70 text-xs">▼</span>
-              </div>
-            </div>
-
-            {/* Vendor Identity Selector (Only for Seller & Not Logged In) */}
-            {activeRole === UserRole.SELLER && !currentUser && (
-               <div className="relative group flex-shrink-0 animate-in fade-in slide-in-from-right-4">
-               <div className="flex items-center gap-2 bg-emerald-500/20 border border-emerald-300/30 text-emerald-50 px-3 py-2 rounded-lg cursor-pointer hover:bg-emerald-500/30 transition-colors backdrop-blur-sm">
-                 <StoreIcon className="w-4 h-4 text-emerald-200" />
-                 <select 
-                   value={currentVendor}
-                   onChange={(e) => setCurrentVendor(e.target.value)}
-                   className="bg-transparent font-extrabold text-sm outline-none cursor-pointer appearance-none pr-4 max-w-[150px] md:max-w-[200px] truncate uppercase tracking-wide text-white [&>option]:text-slate-900"
-                 >
-                   {CITY_VENDORS[currentCity]?.map(vendor => (
-                     <option key={vendor} value={vendor}>{vendor}</option>
-                   ))}
-                 </select>
-                 <span className="absolute right-3 pointer-events-none text-emerald-200 text-xs">▼</span>
-               </div>
-             </div>
-            )}
-
-            {/* User Auth Section */}
-            {currentUser ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-white/20">
+          <div className="flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
                 <div className="text-right hidden sm:block">
-                  <p className="text-xs font-bold text-white">{currentUser.name}</p>
-                  <p className="text-[10px] text-rose-100 uppercase font-bold opacity-80">{currentUser.role}</p>
+                  <p className="text-sm font-bold text-slate-900">{user.name}</p>
+                  <p className="text-xs text-slate-500 font-medium">{user.role === UserRole.SELLER ? user.city : 'Member'}</p>
+                </div>
+                <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 border border-slate-200">
+                   {user.role === UserRole.SELLER ? <StoreIcon className="w-5 h-5"/> : <UserIcon className="w-5 h-5"/>}
                 </div>
                 <button 
-                  onClick={() => setCurrentUser(null)}
-                  className="bg-white/10 hover:bg-white/20 p-2 rounded-full text-white transition-colors"
-                  title="Logout"
+                  onClick={() => setUser(null)}
+                  className="text-xs font-bold text-rose-500 hover:text-rose-700"
                 >
-                  <UserIcon className="w-5 h-5" />
+                  Logout
                 </button>
               </div>
             ) : (
-               <button 
-                 onClick={() => setIsAuthModalOpen(true)}
-                 className="bg-white text-rose-600 px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-rose-50 transition-colors flex-shrink-0"
-               >
-                 Log In
-               </button>
+              <button 
+                onClick={() => setShowAuthModal(true)}
+                className="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg shadow-slate-200"
+              >
+                Sign In
+              </button>
             )}
-
-            {/* Role Toggles - Hide if logged in to avoid confusion, or keep for quick switching in demo */}
-            <div className="flex bg-black/20 p-1 rounded-full border border-white/10 flex-shrink-0">
-              <button 
-                onClick={() => setActiveRole(UserRole.BUYER)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${
-                  activeRole === UserRole.BUYER 
-                    ? 'bg-white text-rose-600 shadow-md transform scale-105' 
-                    : 'text-rose-100 hover:text-white'
-                }`}
-              >
-                <UserIcon className="w-4 h-4"/>
-                <span className="hidden sm:inline">Buyer</span>
-              </button>
-              <button 
-                onClick={() => { setActiveRole(UserRole.SELLER); setViewState('LIST'); }}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${
-                  activeRole === UserRole.SELLER 
-                    ? 'bg-white text-emerald-600 shadow-md transform scale-105' 
-                    : 'text-rose-100 hover:text-white'
-                }`}
-              >
-                <StoreIcon className="w-4 h-4"/>
-                <span className="hidden sm:inline">Seller</span>
-              </button>
-            </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-10 flex-grow w-full">
-        
-        {/* Category Filter */}
-        {viewState === 'LIST' && (
-          <div className="mb-8 overflow-x-auto pb-2">
-            <div className="flex gap-2 min-w-max">
-              {CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-extrabold tracking-wide transition-all border ${
-                    selectedCategory === cat
-                      ? 'bg-rose-600 text-white border-rose-600 shadow-lg shadow-rose-200'
-                      : 'bg-white text-slate-500 border-slate-200 hover:border-rose-300 hover:text-rose-600'
-                  }`}
-                >
-                  {cat.toUpperCase()}
-                </button>
-              ))}
-            </div>
+      <main className="flex-1 container mx-auto px-4 py-8">
+        {!user ? (
+          // Landing Hero
+          <div className="text-center py-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+             <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 px-4 py-2 rounded-full text-orange-700 font-bold text-xs uppercase tracking-wider mb-6">
+                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+                Reverse Auction Marketplace
+             </div>
+             <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
+                Don't Overpay.<br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500">
+                   Get the Best Price.
+                </span>
+             </h1>
+             <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Post your requirements for Electronics, Tyres, or Appliances. 
+                Local dealers compete to give you the lowest quote.
+             </p>
+             <button 
+               onClick={() => setShowAuthModal(true)}
+               className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-slate-800 hover:scale-105 transition-all shadow-xl shadow-slate-300"
+             >
+                Start Saving Now
+             </button>
           </div>
-        )}
-        
-        {/* --- BUYER VIEW --- */}
-        {activeRole === UserRole.BUYER && (
-          <div className="animate-in fade-in duration-500">
-            {viewState === 'LIST' && (
-              <>
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-                  <div className="relative">
-                    <h1 className="text-4xl font-extrabold text-slate-900 mb-2">My Requests in {currentCity}</h1>
-                    <p className="text-slate-500 text-lg max-w-xl">
-                      Find the best deal for your Fridge, AC, TV, Mobile or Tyres. AI does the hard work.
-                    </p>
-                  </div>
-                  <button 
-                    onClick={() => currentUser ? setViewState('CREATE') : setIsAuthModalOpen(true)}
-                    className="bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-xl shadow-rose-200 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
-                  >
-                    <PlusIcon className="w-5 h-5" />
-                    New Request
-                  </button>
-                </div>
-
-                <div className="grid gap-6">
-                  {filteredRequests.filter(r => r.userId.startsWith('user-')).map(req => {
-                    const lowest = getLowestBid(req.bids);
-                    return (
-                      <div 
-                        key={req.id} 
-                        onClick={() => { setSelectedRequestId(req.id); setViewState('DETAILS'); }}
-                        className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-xl hover:border-rose-100 transition-all duration-300 cursor-pointer group hover:-translate-y-1"
-                      >
-                        <div className="flex flex-col sm:flex-row gap-6">
-                          {/* Image Side */}
-                          <div className="w-full sm:w-32 h-32 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 relative">
-                            <img 
-                              src={getCategoryImage(req.category)} 
-                              alt={req.category} 
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                            />
-                            <div className="absolute top-0 right-0 p-1">
-                               <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase border shadow-sm ${getCategoryColor(req.category)} bg-white/90`}>
-                                {req.category}
-                              </span>
-                            </div>
-                          </div>
-                          
-                          {/* Content Side */}
-                          <div className="flex-1 flex flex-col md:flex-row justify-between items-start gap-4">
-                            <div className="flex-1">
-                              <h3 className="text-xl font-bold text-slate-800 group-hover:text-rose-600 transition-colors mb-2">{req.title}</h3>
-                              <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-3">{req.description}</p>
-                              <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold">
-                                <MapPinIcon className="w-3 h-3"/> {req.location}
-                              </div>
-                            </div>
-                            <div className="md:text-right min-w-[120px] pt-1">
-                              <div className="text-xs text-slate-400 font-bold uppercase tracking-wide mb-1">Lowest Bid</div>
-                              <div className={`text-3xl font-extrabold ${lowest && lowest < req.estimatedMarketPrice.min ? 'text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-600' : 'text-slate-900'}`}>
-                                {lowest ? `₹${lowest}` : '-'}
-                              </div>
-                              {lowest && (
-                                <div className="text-xs font-medium text-green-600 bg-green-50 inline-block px-2 py-0.5 rounded-md mt-1">
-                                  Save ₹{req.estimatedMarketPrice.max - lowest}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-50 mt-4">
-                           <div className="flex gap-4 text-sm text-slate-500 font-medium">
-                              <span className="flex items-center gap-1.5"><ClockIcon className="w-4 h-4 text-slate-400"/> {formatDate(req.createdAt)}</span>
-                              <span className="flex items-center gap-1.5"><TagIcon className="w-4 h-4 text-slate-400"/> {req.bids.length} Bids</span>
-                           </div>
-                           <div className="text-sm font-bold text-rose-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                             View Details 
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                           </div>
-                        </div>
+        ) : (
+          <>
+            {/* Buyer View */}
+            {user.role === UserRole.BUYER && (
+              <div className="space-y-8">
+                {!isRequestFormOpen ? (
+                   <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-3xl p-8 md:p-12 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]" onClick={() => setIsRequestFormOpen(true)}>
+                      <div className="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
+                      <div className="relative z-10 max-w-2xl">
+                         <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-white/20">
+                            <PlusIcon className="w-4 h-4" /> New Request
+                         </div>
+                         <h2 className="text-3xl md:text-4xl font-bold mb-4">What do you need today?</h2>
+                         <p className="text-indigo-100 text-lg mb-8">
+                            Describe your requirement (e.g., "Sony 55 inch TV 4K"). Our AI will help you specify it perfectly.
+                         </p>
+                         <button className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 hover:bg-indigo-50 transition-colors">
+                            Create Request
+                         </button>
                       </div>
-                    );
-                  })}
-                  
-                  {filteredRequests.filter(r => r.userId.startsWith('user-')).length === 0 && (
-                     <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <div className="w-16 h-16 bg-rose-50 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <PlusIcon className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2">No Requests Found</h3>
-                        <p className="text-slate-500 mb-6">Create your first request to get started finding deals.</p>
-                        <button 
-                          onClick={() => setViewState('CREATE')}
-                          className="bg-rose-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-rose-100"
-                        >
-                          Create Request
-                        </button>
-                     </div>
-                  )}
-                </div>
-              </>
-            )}
+                   </div>
+                ) : (
+                   <RequestForm 
+                     onSubmit={handlePostRequest} 
+                     onCancel={() => setIsRequestFormOpen(false)} 
+                   />
+                )}
 
-            {viewState === 'CREATE' && (
-              <div className="animate-in slide-in-from-bottom-8">
-                <RequestForm 
-                  onSubmit={handleCreateRequest} 
-                  onCancel={() => setViewState('LIST')} 
-                />
+                <div>
+                   <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                     <ClockIcon className="w-6 h-6 text-slate-400" />
+                     Your Requests
+                   </h3>
+                   <div className="grid gap-6">
+                      {myRequests.length === 0 ? (
+                        <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-300">
+                           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                              <SearchIcon className="w-8 h-8" />
+                           </div>
+                           <p className="text-slate-500 font-medium">No requests yet. Create one to start getting bids!</p>
+                        </div>
+                      ) : (
+                        myRequests.map(req => (
+                           <div key={req.id} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                              <div className="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-6">
+                                 <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                       <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{req.category}</span>
+                                       <span className="text-xs text-slate-400 font-medium">• {getTimeAgo(req.createdAt)}</span>
+                                       {req.status === RequestStatus.CLOSED && <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Fulfilled</span>}
+                                    </div>
+                                    <h4 className="text-xl font-bold text-slate-900">{req.title}</h4>
+                                    <p className="text-slate-500 text-sm mt-1">{req.description}</p>
+                                    
+                                    <div className="flex gap-2 mt-3 flex-wrap">
+                                       {Object.entries(req.specs).slice(0, 3).map(([k, v]) => (
+                                          <span key={k} className="text-xs bg-slate-50 text-slate-500 px-2 py-1 rounded border border-slate-100">
+                                             <span className="font-bold opacity-70">{k}:</span> {String(v)}
+                                          </span>
+                                       ))}
+                                    </div>
+                                 </div>
+                                 <div className="text-right shrink-0">
+                                    <p className="text-xs text-slate-400 uppercase font-bold">Est. Market Price</p>
+                                    <p className="text-lg font-bold text-slate-700">₹{req.estimatedMarketPrice.min} - ₹{req.estimatedMarketPrice.max}</p>
+                                 </div>
+                              </div>
+
+                              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                 <div className="flex items-center justify-between mb-4">
+                                    <h5 className="font-bold text-slate-700 flex items-center gap-2 text-sm">
+                                       <TagIcon className="w-4 h-4 text-rose-500" />
+                                       Seller Bids ({req.bids.length})
+                                    </h5>
+                                    {req.bids.length > 0 && req.status === RequestStatus.OPEN && (
+                                       <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                          Lowest: ₹{Math.min(...req.bids.map(b => b.amount))}
+                                       </span>
+                                    )}
+                                 </div>
+                                 
+                                 {req.bids.length === 0 ? (
+                                    <p className="text-xs text-slate-400 italic text-center py-2">Waiting for sellers to bid...</p>
+                                 ) : (
+                                    <div className="space-y-3">
+                                       {req.bids.sort((a,b) => a.amount - b.amount).map((bid, index) => (
+                                          <div key={bid.id} className={`flex flex-col sm:flex-row justify-between sm:items-center p-3 rounded-xl bg-white border ${req.winningBidId === bid.id ? 'border-green-400 ring-1 ring-green-100' : 'border-slate-200'} transition-all`}>
+                                             <div className="mb-2 sm:mb-0">
+                                                <div className="flex items-center gap-2">
+                                                   <span className="font-bold text-slate-800 text-sm">{bid.sellerName}</span>
+                                                   {index === 0 && req.status === RequestStatus.OPEN && <span className="text-[10px] bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded font-bold">Best Price</span>}
+                                                </div>
+                                                <p className="text-xs text-slate-500 mt-0.5">{bid.notes}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1 flex items-center gap-1"><ClockIcon className="w-3 h-3"/> Delivers in {bid.deliveryDays} days</p>
+                                             </div>
+                                             <div className="flex items-center gap-3">
+                                                <span className="font-bold text-lg text-slate-900">₹{bid.amount}</span>
+                                                {req.status === RequestStatus.OPEN ? (
+                                                   <button 
+                                                      onClick={() => handleAcceptBid(req, bid)}
+                                                      className="bg-slate-900 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
+                                                   >
+                                                      Accept
+                                                   </button>
+                                                ) : req.winningBidId === bid.id ? (
+                                                   <span className="flex items-center gap-1 text-green-600 font-bold text-xs">
+                                                      <CheckCircleIcon className="w-4 h-4" /> Accepted
+                                                   </span>
+                                                ) : null}
+                                             </div>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 )}
+                              </div>
+                           </div>
+                        ))
+                      )}
+                   </div>
+                </div>
               </div>
             )}
 
-            {viewState === 'DETAILS' && selectedRequest && (
-               <div className="animate-in slide-in-from-right-8">
-                 <button onClick={() => setViewState('LIST')} className="mb-6 flex items-center gap-2 text-slate-500 hover:text-slate-800 font-bold transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-                    Back to List
-                 </button>
-                 
-                 <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div className="p-8 border-b border-slate-100">
-                       <div className="flex flex-col md:flex-row justify-between gap-4">
-                          <div>
-                            <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase mb-3 inline-block ${getCategoryColor(selectedRequest.category)}`}>{selectedRequest.category}</span>
-                            <h2 className="text-3xl font-extrabold text-slate-900 mb-3">{selectedRequest.title}</h2>
-                            <p className="text-slate-500 text-lg">{selectedRequest.description}</p>
-                          </div>
-                          <div className="text-right">
-                             <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Market Estimate</p>
-                             <p className="text-2xl font-extrabold text-slate-700">₹{selectedRequest.estimatedMarketPrice.min} - ₹{selectedRequest.estimatedMarketPrice.max}</p>
-                          </div>
-                       </div>
-                       
-                       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {Object.entries(selectedRequest.specs).map(([key, value]) => (
-                             <div key={key} className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">{key.replace(/([A-Z])/g, ' $1')}</p>
-                                <p className="font-bold text-slate-800 text-sm">{String(value)}</p>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
+            {/* Seller View */}
+            {user.role === UserRole.SELLER && (
+               <div className="space-y-8">
+                  <SellerDashboard sellerName={user.vendorName!} requests={requests} />
+                  
+                  <div>
+                     <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                        <MapPinIcon className="w-6 h-6 text-rose-500" />
+                        Live Opportunities in {user.city}
+                     </h3>
+                     <div className="grid gap-6">
+                        {marketFeed.length === 0 ? (
+                           <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-slate-300">
+                              <p className="text-slate-400 font-medium">No open requests in your area right now.</p>
+                           </div>
+                        ) : (
+                           marketFeed.map(req => {
+                              const myBid = req.bids.find(b => b.sellerName === user.vendorName);
+                              return (
+                                 <div key={req.id} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                                    <div className="flex justify-between items-start mb-4">
+                                       <div>
+                                          <div className="flex items-center gap-2 mb-1">
+                                             <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{req.category}</span>
+                                             <span className="text-xs text-slate-400">• {getTimeAgo(req.createdAt)}</span>
+                                          </div>
+                                          <h4 className="text-xl font-bold text-slate-900">{req.title}</h4>
+                                       </div>
+                                       <div className="text-right">
+                                          <p className="text-xs text-slate-400 uppercase font-bold">Target Price</p>
+                                          <p className="text-lg font-bold text-slate-700">₹{req.estimatedMarketPrice.min} - {req.estimatedMarketPrice.max}</p>
+                                       </div>
+                                    </div>
+                                    
+                                    <div className="bg-slate-50 p-4 rounded-xl mb-4 text-sm text-slate-600">
+                                       <p><span className="font-bold">Requirements:</span> {req.description}</p>
+                                       <div className="flex flex-wrap gap-2 mt-2">
+                                          {Object.entries(req.specs).map(([k, v]) => (
+                                             <span key={k} className="text-xs bg-white border border-slate-200 px-1.5 py-0.5 rounded">
+                                                {k}: {String(v)}
+                                             </span>
+                                          ))}
+                                       </div>
+                                    </div>
 
-                    <div className="p-8 bg-slate-50/50">
-                       <h3 className="font-bold text-xl text-slate-900 mb-6 flex items-center gap-2">
-                         <TagIcon className="w-5 h-5 text-rose-500"/> Seller Bids ({selectedRequest.bids.length})
-                       </h3>
-                       
-                       <div className="space-y-4">
-                          {selectedRequest.bids.length === 0 ? (
-                            <div className="text-center py-12 bg-white rounded-2xl border border-slate-100">
-                               <p className="text-slate-400 font-medium">No bids yet. Sellers will start bidding soon.</p>
-                            </div>
-                          ) : (
-                            selectedRequest.bids.sort((a,b) => a.amount - b.amount).map((bid, idx) => (
-                               <div key={bid.id} className={`bg-white p-5 rounded-2xl border transition-all ${idx === 0 ? 'border-green-200 shadow-md shadow-green-50 ring-1 ring-green-100' : 'border-slate-100'}`}>
-                                  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                                     <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${idx === 0 ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
-                                           {idx + 1}
-                                        </div>
-                                        <div>
-                                           <p className="font-bold text-slate-900">{bid.sellerName}</p>
-                                           <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                                              <span>{bid.deliveryDays} Days Delivery</span>
-                                              <span>•</span>
-                                              <span>{formatDate(bid.timestamp)}</span>
-                                           </div>
-                                        </div>
-                                     </div>
-                                     
-                                     <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
-                                        <div className="text-right">
-                                           <p className="text-3xl font-extrabold text-slate-900">₹{bid.amount}</p>
-                                           {idx === 0 && <p className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded inline-block mt-1">Best Price</p>}
-                                        </div>
-                                        {selectedRequest.status === RequestStatus.OPEN && (
-                                            <button 
-                                              onClick={() => initiatePayment(bid)}
-                                              className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-slate-200 transition-all active:scale-95"
-                                            >
-                                              Accept
-                                            </button>
-                                        )}
-                                        {selectedRequest.status === RequestStatus.CLOSED && selectedRequest.winningBidId === bid.id && (
-                                           <div className="bg-green-100 text-green-800 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2">
-                                              <CheckCircleIcon className="w-4 h-4"/> Accepted
-                                           </div>
-                                        )}
-                                     </div>
-                                  </div>
-                                  {bid.notes && (
-                                     <div className="mt-4 pt-4 border-t border-slate-50 text-sm text-slate-500 bg-slate-50/50 p-3 rounded-lg">
-                                        <span className="font-bold text-slate-700">Note:</span> {bid.notes}
-                                     </div>
-                                  )}
-                               </div>
-                            ))
-                          )}
-                       </div>
-                    </div>
-                 </div>
-               </div>
-            )}
-          </div>
-        )}
-
-        {/* --- SELLER VIEW --- */}
-        {activeRole === UserRole.SELLER && (
-           <div className="animate-in fade-in duration-500">
-             {viewState === 'LIST' && (
-                <>
-                  <div className="flex items-end justify-between mb-8">
-                     <div>
-                        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Marketplace Requests</h1>
-                        <p className="text-slate-500">Active leads in <span className="font-bold text-rose-600">{currentCity}</span></p>
+                                    <div className="flex items-center justify-between">
+                                       <div className="text-xs font-bold text-slate-500">
+                                          {req.bids.length} Bids so far • Lowest: ₹{req.bids.length > 0 ? Math.min(...req.bids.map(b => b.amount)) : '-'}
+                                       </div>
+                                       {myBid ? (
+                                          <div className="flex items-center gap-2 text-blue-600 font-bold text-sm bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                                             <CheckCircleIcon className="w-4 h-4" /> Bid Placed: ₹{myBid.amount}
+                                          </div>
+                                       ) : (
+                                          <button 
+                                             onClick={() => setActiveBidRequest(req)}
+                                             className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg shadow-rose-100 transition-all active:scale-95"
+                                          >
+                                             Place Bid
+                                          </button>
+                                       )}
+                                    </div>
+                                 </div>
+                              );
+                           })
+                        )}
                      </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                     {filteredRequests.map(req => {
-                        const myBid = req.bids.find(b => b.sellerName === (currentUser?.vendorName || currentVendor));
-                        const lowest = getLowestBid(req.bids);
-                        
-                        return (
-                           <div key={req.id} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 hover:shadow-xl hover:border-emerald-100 transition-all group flex flex-col h-full">
-                              <div className="flex items-start justify-between mb-4">
-                                 <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full uppercase border ${getCategoryColor(req.category)}`}>
-                                    {req.category}
-                                 </span>
-                                 <span className="text-xs font-bold text-slate-400">{formatDate(req.createdAt)}</span>
-                              </div>
-                              
-                              <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 leading-tight">{req.title}</h3>
-                              <p className="text-slate-500 text-sm mb-4 line-clamp-2 flex-grow">{req.description}</p>
-                              
-                              <div className="bg-slate-50 rounded-xl p-3 mb-4 space-y-2">
-                                 <div className="flex justify-between text-xs">
-                                    <span className="text-slate-400 font-bold uppercase">Budget</span>
-                                    <span className="font-bold text-slate-700">₹{req.estimatedMarketPrice.max}</span>
-                                 </div>
-                                 <div className="flex justify-between text-xs">
-                                    <span className="text-slate-400 font-bold uppercase">Lowest Bid</span>
-                                    <span className={`font-bold ${lowest ? 'text-emerald-600' : 'text-slate-400'}`}>{lowest ? `₹${lowest}` : '-'}</span>
-                                 </div>
-                              </div>
-
-                              {myBid ? (
-                                 <div className="mt-auto bg-emerald-50 text-emerald-800 p-3 rounded-xl font-bold text-sm text-center border border-emerald-100">
-                                    You Bid ₹{myBid.amount}
-                                 </div>
-                              ) : (
-                                 <button 
-                                    onClick={() => initiateBid(req.id)}
-                                    className="mt-auto w-full bg-slate-900 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-slate-200 hover:shadow-emerald-200 transition-all active:scale-95"
-                                 >
-                                    Place Bid
-                                 </button>
-                              )}
-                           </div>
-                        );
-                     })}
-                  </div>
-                </>
-             )}
-
-             {viewState === 'DASHBOARD' && currentUser && (
-                <SellerDashboard sellerName={currentUser.vendorName!} requests={requests} />
-             )}
-           </div>
+               </div>
+            )}
+          </>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-rose-600 to-orange-600 text-white mt-auto relative z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+      <footer className="bg-slate-900 text-slate-400 py-12 mt-20">
+         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+               <div className="flex items-center gap-2 mb-4 text-white font-bold text-lg">
+                  <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg"></div>
+                  My Deal
+               </div>
+               <p className="max-w-xs leading-relaxed">
+                  The smartest way to buy electronics and auto parts. We get you the best market price through reverse auction.
+               </p>
+            </div>
             
-            <div className="text-center md:text-left">
-              <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
-                <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
-                  <TrendingDownIcon className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-extrabold text-lg text-white">My Deal</span>
-              </div>
-              <p className="text-rose-100 text-sm max-w-xs opacity-90">
-                Connecting smart buyers with trusted local sellers for the best market prices.
-              </p>
+            <div>
+               <h4 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">Platform</h4>
+               <ul className="space-y-2">
+                  <li>
+                     <button onClick={() => setShowAboutModal(true)} className="hover:text-white transition-colors">About Us</button>
+                  </li>
+                  <li>
+                     <button onClick={() => setShowContactModal(true)} className="hover:text-white transition-colors">Contact Us</button>
+                  </li>
+               </ul>
             </div>
-
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-bold text-rose-100">
-              <a href="#" className="hover:text-white transition-colors">How it Works</a>
-              <a href="#" className="hover:text-white transition-colors">Seller Guidelines</a>
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Support</a>
+            
+            <div>
+               <h4 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">Legal</h4>
+               <ul className="space-y-2">
+                  <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+               </ul>
             </div>
-
-            <div className="text-center md:text-right text-xs text-rose-200 font-medium">
-              <p>© {new Date().getFullYear()} My Deal Platform.</p>
-              <p>Made with AI.</p>
-            </div>
-          </div>
-        </div>
+         </div>
+         <div className="container mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
+            © {new Date().getFullYear()} My Deal Platform. All rights reserved.
+         </div>
       </footer>
 
+      {/* Footer Modals */}
+      {showAboutModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowAboutModal(false)}>
+          <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowAboutModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-slate-900">About My Deal</h2>
+            <p className="text-slate-600 leading-relaxed mb-4 text-lg">
+              Many people don't know the best price for items like <span className="font-bold text-slate-800">Fridges, ACs, or Car Tyres</span>.
+            </p>
+            <p className="text-slate-600 leading-relaxed">
+              We created this platform where buyers can submit their requirements, and sellers bid to provide the best price. This reverse auction model ensures you save money while sellers get genuine leads.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {showContactModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowContactModal(false)}>
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowContactModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-bold mb-2 text-slate-900">Contact Us</h2>
+            <p className="text-slate-500 mb-8">
+              Need help or have a query? Chat with our support team directly.
+            </p>
+            <a 
+              href="https://wa.me/919876543210" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-green-200 transition-all active:scale-95 group"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 group-hover:scale-110 transition-transform">
+                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Modals */}
-      {isAuthModalOpen && (
+      {showAuthModal && (
         <AuthModal 
-          onClose={() => setIsAuthModalOpen(false)} 
-          onLogin={(user) => { handleLogin(user); setIsAuthModalOpen(false); }}
-          initialRole={activeRole}
+          onClose={() => setShowAuthModal(false)}
+          onLogin={(user) => {
+            setUser(user);
+            setShowAuthModal(false);
+          }}
+          initialRole={UserRole.BUYER}
           cityVendors={CITY_VENDORS}
         />
       )}
 
-      {isBidModalOpen && selectedRequest && (
+      {activeBidRequest && (
         <BidModal 
-          request={selectedRequest}
-          sellerName={currentUser?.vendorName || currentVendor}
-          onClose={() => setIsBidModalOpen(false)}
-          onSubmit={handlePlaceBid}
+          request={activeBidRequest}
+          sellerName={user?.vendorName || ''}
+          onClose={() => setActiveBidRequest(null)}
+          onSubmit={handleBidSubmit}
         />
       )}
 
-      {isPaymentModalOpen && selectedRequest && selectedBidForPayment && (
-         <PaymentModal 
-            request={selectedRequest}
-            bid={selectedBidForPayment}
-            onClose={() => setIsPaymentModalOpen(false)}
-            onConfirm={handleConfirmPayment}
-         />
+      {showPaymentModal && (
+        <PaymentModal
+          request={showPaymentModal.req}
+          bid={showPaymentModal.bid}
+          onClose={() => setShowPaymentModal(null)}
+          onConfirm={handlePaymentConfirm}
+        />
       )}
-
     </div>
   );
-}
+};
+
+export default App;
