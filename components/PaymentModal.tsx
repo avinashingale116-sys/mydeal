@@ -27,7 +27,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ request, bid, onClose, onCo
           <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl mb-6 flex justify-between items-center">
              <div>
                <p className="text-xs font-bold text-emerald-600 uppercase">Total Amount</p>
-               <p className="text-2xl font-extrabold text-emerald-800">${bid.amount}</p>
+               <p className="text-2xl font-extrabold text-emerald-800">₹{bid.amount}</p>
              </div>
              <div className="text-right">
                 <p className="text-xs font-bold text-emerald-600 uppercase">Seller</p>

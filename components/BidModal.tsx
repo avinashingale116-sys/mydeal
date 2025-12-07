@@ -63,12 +63,12 @@ const BidModal: React.FC<BidModalProps> = ({ request, sellerName, onClose, onSub
           <div className="bg-rose-50 p-4 rounded-2xl text-sm border border-rose-100 flex justify-between items-center">
             <div>
               <p className="text-xs text-rose-500 uppercase font-bold tracking-wide">Client Budget</p>
-              <p className="font-bold text-slate-900 text-lg">${request.estimatedMarketPrice.max}</p>
+              <p className="font-bold text-slate-900 text-lg">₹{request.estimatedMarketPrice.max}</p>
             </div>
             <div className="text-right border-l border-rose-200 pl-4">
               <p className="text-xs text-rose-500 uppercase font-bold tracking-wide">Current Lowest</p>
               <p className={`font-bold text-lg ${bestBid ? 'text-green-600' : 'text-slate-400'}`}>
-                {bestBid ? `$${bestBid}` : 'None'}
+                {bestBid ? `₹${bestBid}` : 'None'}
               </p>
             </div>
           </div>
@@ -83,110 +83,89 @@ const BidModal: React.FC<BidModalProps> = ({ request, sellerName, onClose, onSub
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <h4 className="font-bold text-indigo-900 text-sm">AI Price Strategy</h4>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${suggestion.winProbability === 'High' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                      {suggestion.winProbability} Chance
-                    </span>
+                    <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{suggestion.winProbability} Win Chance</span>
                   </div>
-                  <p className="text-xs text-indigo-700 mt-1 leading-relaxed">{suggestion.reasoning}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="font-bold text-indigo-900 text-lg">${suggestion.suggestedPrice}</span>
-                    <button 
-                      type="button"
-                      onClick={applySuggestion}
-                      className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg font-bold transition-colors"
-                    >
-                      Apply Price
-                    </button>
-                  </div>
+                  <p className="text-sm text-indigo-900 mt-2 font-medium">Recommended: <span className="font-bold">₹{suggestion.suggestedPrice}</span></p>
+                  <p className="text-xs text-indigo-600/80 mt-1 leading-relaxed">{suggestion.reasoning}</p>
+                  <button 
+                    type="button" 
+                    onClick={applySuggestion}
+                    className="mt-3 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    Apply Price
+                  </button>
                 </div>
               </div>
             </div>
           )}
 
-          <div>
-            <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Bidding As (You)</label>
-            <div className="relative flex items-center">
-              <div className="w-full pl-3 p-3 border-2 border-emerald-100 bg-emerald-50 rounded-xl font-bold text-emerald-800 flex items-center gap-2">
-                <StoreIcon className="w-4 h-4 text-emerald-600" />
-                {sellerName}
-              </div>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-1 pl-1">*To change identity, switch vendors in the main dashboard.</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-xs font-bold text-slate-500 uppercase">Price ($)</label>
+              <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Your Offer Amount (₹)</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                <input 
+                  type="number" 
+                  required
+                  value={amount}
+                  onChange={e => setAmount(e.target.value)}
+                  className="w-full pl-8 p-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-400 outline-none font-bold text-lg"
+                  placeholder="0"
+                />
                 {!suggestion && (
                   <button 
-                    type="button"
+                    type="button" 
                     onClick={handleGetSuggestion}
                     disabled={isGettingSuggestion}
-                    className="flex items-center gap-1 text-[10px] font-bold text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                   >
-                    {isGettingSuggestion ? <span className="animate-spin">⌛</span> : <SparklesIcon className="w-3 h-3" />}
-                    Get Suggestion
+                    {isGettingSuggestion ? '...' : <><SparklesIcon className="w-3 h-3"/> AI Suggest</>}
                   </button>
                 )}
               </div>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
-                <input
-                  type="number"
-                  required
-                  min="1"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full pl-7 p-3 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-rose-100 focus:border-rose-500 outline-none font-bold text-lg text-slate-900 transition-all"
-                  placeholder="0.00"
-                />
-              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+               <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Delivery Days</label>
+                  <div className="relative">
+                    <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                    <input 
+                      type="number" 
+                      required
+                      min="1"
+                      value={days}
+                      onChange={e => setDays(e.target.value)}
+                      className="w-full pl-10 p-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-400 outline-none font-bold"
+                    />
+                  </div>
+               </div>
+               <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Bidder</label>
+                  <div className="flex items-center gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl h-[50px]">
+                     <StoreIcon className="w-4 h-4 text-slate-400" />
+                     <span className="font-bold text-slate-700 text-sm truncate">{sellerName}</span>
+                  </div>
+               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Delivery (Days)</label>
-              <div className="relative">
-                <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="number"
-                  required
-                  min="1"
-                  value={days}
-                  onChange={(e) => setDays(e.target.value)}
-                  className="w-full pl-9 p-3 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-rose-100 focus:border-rose-500 outline-none font-bold text-lg text-slate-900 transition-all"
-                />
-              </div>
+              <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Additional Notes</label>
+              <textarea 
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                className="w-full p-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-400 outline-none text-sm h-24 resize-none"
+                placeholder="E.g. Free installation included, warranty details..."
+              />
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Notes / Offer Details</label>
-            <textarea
-              required
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full p-4 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-rose-100 focus:border-rose-500 outline-none h-28 resize-none text-slate-700 transition-all"
-              placeholder="e.g. Brand new unit, includes 2 year warranty and free shipping..."
-            />
-          </div>
-
-          <div className="pt-4 flex gap-3">
-             <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-3 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-xl font-bold transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-[2] bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white py-3 rounded-xl font-bold shadow-xl shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2"
-            >
-              <TagIcon className="w-5 h-5" />
-              Submit Bid
-            </button>
-          </div>
+          <button 
+            type="submit"
+            className="w-full bg-rose-600 hover:bg-rose-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+          >
+            Submit Bid
+          </button>
         </form>
       </div>
     </div>

@@ -26,10 +26,10 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     category: 'Fridge',
     description: 'Looking for a silver finish, convertable 5-in-1 model. Must be energy efficient.',
     specs: { brand: 'Samsung', capacity: '500L', type: 'Double Door', energyRating: '3 Star' },
-    estimatedMarketPrice: { min: 800, max: 1000 },
+    estimatedMarketPrice: { min: 38000, max: 45000 },
     bids: [
-      { id: 'bid-1', sellerName: 'RAJDHANI HOME APPLIANCES', amount: 850, deliveryDays: 2, notes: 'Includes free installation', timestamp: Date.now() - 100000 },
-      { id: 'bid-2', sellerName: 'Shisa Appliances', amount: 820, deliveryDays: 5, notes: 'Cardboard slightly damaged, product new', timestamp: Date.now() - 80000 },
+      { id: 'bid-1', sellerName: 'RAJDHANI HOME APPLIANCES', amount: 39500, deliveryDays: 2, notes: 'Includes free installation', timestamp: Date.now() - 100000 },
+      { id: 'bid-2', sellerName: 'Shisa Appliances', amount: 38900, deliveryDays: 5, notes: 'Cardboard slightly damaged, product new', timestamp: Date.now() - 80000 },
     ],
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 200000,
@@ -42,7 +42,7 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     category: 'Tyres',
     description: 'For my Honda City. Size 195/65 R15.',
     specs: { brand: 'Michelin', size: '195/65 R15', quantity: 4, type: 'Tubeless' },
-    estimatedMarketPrice: { min: 300, max: 400 },
+    estimatedMarketPrice: { min: 24000, max: 28000 },
     bids: [],
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 50000,
@@ -55,9 +55,9 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     category: 'AC',
     description: 'Dual Inverter Split AC, Copper Condenser, 5 Star rating for bedroom.',
     specs: { brand: 'LG', capacity: '1.5 Ton', type: 'Split', energyRating: '5 Star' },
-    estimatedMarketPrice: { min: 450, max: 600 },
+    estimatedMarketPrice: { min: 42000, max: 48000 },
     bids: [
-       { id: 'bid-4', sellerName: 'ORANGE HOME APPLIANCES', amount: 480, deliveryDays: 1, notes: 'Free stabilizer included', timestamp: Date.now() - 20000 },
+       { id: 'bid-4', sellerName: 'ORANGE HOME APPLIANCES', amount: 43500, deliveryDays: 1, notes: 'Free stabilizer included', timestamp: Date.now() - 20000 },
     ],
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 10000,
@@ -70,7 +70,7 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     category: 'TV',
     description: 'Latest model with XR processor and PS5 gaming features.',
     specs: { brand: 'Sony', size: '55 inch', resolution: '4K', type: 'LED' },
-    estimatedMarketPrice: { min: 900, max: 1100 },
+    estimatedMarketPrice: { min: 75000, max: 85000 },
     bids: [],
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 800000,
@@ -83,7 +83,7 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     category: 'Mobile',
     description: 'Natural Titanium color, brand new sealed box required. Urgent requirement.',
     specs: { brand: 'Apple', model: 'iPhone 15 Pro Max', storage: '256GB', color: 'Natural Titanium' },
-    estimatedMarketPrice: { min: 1100, max: 1300 },
+    estimatedMarketPrice: { min: 140000, max: 155000 },
     bids: [],
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 5000,
@@ -96,9 +96,9 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     category: 'Mobile',
     description: 'Looking for the AI phone, 512GB variant in Titanium Gray.',
     specs: { brand: 'Samsung', model: 'S24 Ultra', storage: '512GB', color: 'Titanium Gray' },
-    estimatedMarketPrice: { min: 1200, max: 1400 },
+    estimatedMarketPrice: { min: 115000, max: 130000 },
     bids: [
-       { id: 'bid-5', sellerName: 'REAL HOME APPLIANCES', amount: 1250, deliveryDays: 1, notes: 'Includes Galaxy Watch offer', timestamp: Date.now() - 1000 },
+       { id: 'bid-5', sellerName: 'REAL HOME APPLIANCES', amount: 118000, deliveryDays: 1, notes: 'Includes Galaxy Watch offer', timestamp: Date.now() - 1000 },
     ],
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 60000,
@@ -310,15 +310,15 @@ export default function App() {
 
           <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
             
-            {/* Home Tab - Added */}
+            {/* Home Tab */}
             <button 
               onClick={() => {setViewState('LIST'); setSelectedRequestId(null);}}
               className={`px-4 py-2 rounded-lg text-sm font-extrabold transition-all hidden md:block ${viewState === 'LIST' && !selectedRequestId ? 'text-rose-600 bg-rose-50' : 'text-slate-500 hover:text-slate-900'}`}
             >
-              Home
+              HOME
             </button>
 
-            {/* City Selector - Bolder */}
+            {/* City Selector */}
             <div className="relative group flex-shrink-0">
               <div className="flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-800 px-3 py-2 rounded-lg cursor-pointer hover:bg-rose-100 transition-colors">
                 <MapPinIcon className="w-4 h-4 text-rose-600" />
@@ -489,11 +489,11 @@ export default function App() {
                             <div className="md:text-right min-w-[120px] pt-1">
                               <div className="text-xs text-slate-400 font-bold uppercase tracking-wide mb-1">Lowest Bid</div>
                               <div className={`text-3xl font-extrabold ${lowest && lowest < req.estimatedMarketPrice.min ? 'text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-600' : 'text-slate-900'}`}>
-                                {lowest ? `$${lowest}` : '-'}
+                                {lowest ? `₹${lowest}` : '-'}
                               </div>
                               {lowest && (
                                 <div className="text-xs font-medium text-green-600 bg-green-50 inline-block px-2 py-0.5 rounded-md mt-1">
-                                  Save ${req.estimatedMarketPrice.max - lowest}
+                                  Save ₹{req.estimatedMarketPrice.max - lowest}
                                 </div>
                               )}
                             </div>
@@ -519,4 +519,224 @@ export default function App() {
                         <div className="w-16 h-16 bg-rose-50 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4">
                           <PlusIcon className="w-8 h-8" />
                         </div>
-                        <h3 className
+                        <h3 className="text-lg font-bold text-slate-900 mb-2">No Requests Found</h3>
+                        <p className="text-slate-500 mb-6">Create your first request to get started finding deals.</p>
+                        <button 
+                          onClick={() => setViewState('CREATE')}
+                          className="bg-rose-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-rose-100"
+                        >
+                          Create Request
+                        </button>
+                     </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {viewState === 'CREATE' && (
+              <div className="animate-in slide-in-from-bottom-8">
+                <RequestForm 
+                  onSubmit={handleCreateRequest} 
+                  onCancel={() => setViewState('LIST')} 
+                />
+              </div>
+            )}
+
+            {viewState === 'DETAILS' && selectedRequest && (
+               <div className="animate-in slide-in-from-right-8">
+                 <button onClick={() => setViewState('LIST')} className="mb-6 flex items-center gap-2 text-slate-500 hover:text-slate-800 font-bold transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                    Back to List
+                 </button>
+                 
+                 <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="p-8 border-b border-slate-100">
+                       <div className="flex flex-col md:flex-row justify-between gap-4">
+                          <div>
+                            <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase mb-3 inline-block ${getCategoryColor(selectedRequest.category)}`}>{selectedRequest.category}</span>
+                            <h2 className="text-3xl font-extrabold text-slate-900 mb-3">{selectedRequest.title}</h2>
+                            <p className="text-slate-500 text-lg">{selectedRequest.description}</p>
+                          </div>
+                          <div className="text-right">
+                             <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Market Estimate</p>
+                             <p className="text-2xl font-extrabold text-slate-700">₹{selectedRequest.estimatedMarketPrice.min} - ₹{selectedRequest.estimatedMarketPrice.max}</p>
+                          </div>
+                       </div>
+                       
+                       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {Object.entries(selectedRequest.specs).map(([key, value]) => (
+                             <div key={key} className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">{key.replace(/([A-Z])/g, ' $1')}</p>
+                                <p className="font-bold text-slate-800 text-sm">{String(value)}</p>
+                             </div>
+                          ))}
+                       </div>
+                    </div>
+
+                    <div className="p-8 bg-slate-50/50">
+                       <h3 className="font-bold text-xl text-slate-900 mb-6 flex items-center gap-2">
+                         <TagIcon className="w-5 h-5 text-rose-500"/> Seller Bids ({selectedRequest.bids.length})
+                       </h3>
+                       
+                       <div className="space-y-4">
+                          {selectedRequest.bids.length === 0 ? (
+                            <div className="text-center py-12 bg-white rounded-2xl border border-slate-100">
+                               <p className="text-slate-400 font-medium">No bids yet. Sellers will start bidding soon.</p>
+                            </div>
+                          ) : (
+                            selectedRequest.bids.sort((a,b) => a.amount - b.amount).map((bid, idx) => (
+                               <div key={bid.id} className={`bg-white p-5 rounded-2xl border transition-all ${idx === 0 ? 'border-green-200 shadow-md shadow-green-50 ring-1 ring-green-100' : 'border-slate-100'}`}>
+                                  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                                     <div className="flex items-center gap-4">
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${idx === 0 ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                                           {idx + 1}
+                                        </div>
+                                        <div>
+                                           <p className="font-bold text-slate-900">{bid.sellerName}</p>
+                                           <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                                              <span>{bid.deliveryDays} Days Delivery</span>
+                                              <span>•</span>
+                                              <span>{formatDate(bid.timestamp)}</span>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     
+                                     <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                                        <div className="text-right">
+                                           <p className="text-3xl font-extrabold text-slate-900">₹{bid.amount}</p>
+                                           {idx === 0 && <p className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded inline-block mt-1">Best Price</p>}
+                                        </div>
+                                        {selectedRequest.status === RequestStatus.OPEN && (
+                                            <button 
+                                              onClick={() => initiatePayment(bid)}
+                                              className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-slate-200 transition-all active:scale-95"
+                                            >
+                                              Accept
+                                            </button>
+                                        )}
+                                        {selectedRequest.status === RequestStatus.CLOSED && selectedRequest.winningBidId === bid.id && (
+                                           <div className="bg-green-100 text-green-800 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2">
+                                              <CheckCircleIcon className="w-4 h-4"/> Accepted
+                                           </div>
+                                        )}
+                                     </div>
+                                  </div>
+                                  {bid.notes && (
+                                     <div className="mt-4 pt-4 border-t border-slate-50 text-sm text-slate-500 bg-slate-50/50 p-3 rounded-lg">
+                                        <span className="font-bold text-slate-700">Note:</span> {bid.notes}
+                                     </div>
+                                  )}
+                               </div>
+                            ))
+                          )}
+                       </div>
+                    </div>
+                 </div>
+               </div>
+            )}
+          </div>
+        )}
+
+        {/* --- SELLER VIEW --- */}
+        {activeRole === UserRole.SELLER && (
+           <div className="animate-in fade-in duration-500">
+             {viewState === 'LIST' && (
+                <>
+                  <div className="flex items-end justify-between mb-8">
+                     <div>
+                        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Marketplace Requests</h1>
+                        <p className="text-slate-500">Active leads in <span className="font-bold text-rose-600">{currentCity}</span></p>
+                     </div>
+                     <button 
+                        onClick={() => currentUser ? setViewState('DASHBOARD') : setIsAuthModalOpen(true)}
+                        className="bg-white text-slate-700 border border-slate-200 hover:border-slate-300 px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2"
+                     >
+                        <LayoutDashboardIcon className="w-5 h-5"/> Dashboard
+                     </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                     {filteredRequests.map(req => {
+                        const myBid = req.bids.find(b => b.sellerName === (currentUser?.vendorName || currentVendor));
+                        const lowest = getLowestBid(req.bids);
+                        
+                        return (
+                           <div key={req.id} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 hover:shadow-xl hover:border-emerald-100 transition-all group flex flex-col h-full">
+                              <div className="flex items-start justify-between mb-4">
+                                 <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full uppercase border ${getCategoryColor(req.category)}`}>
+                                    {req.category}
+                                 </span>
+                                 <span className="text-xs font-bold text-slate-400">{formatDate(req.createdAt)}</span>
+                              </div>
+                              
+                              <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 leading-tight">{req.title}</h3>
+                              <p className="text-slate-500 text-sm mb-4 line-clamp-2 flex-grow">{req.description}</p>
+                              
+                              <div className="bg-slate-50 rounded-xl p-3 mb-4 space-y-2">
+                                 <div className="flex justify-between text-xs">
+                                    <span className="text-slate-400 font-bold uppercase">Budget</span>
+                                    <span className="font-bold text-slate-700">₹{req.estimatedMarketPrice.max}</span>
+                                 </div>
+                                 <div className="flex justify-between text-xs">
+                                    <span className="text-slate-400 font-bold uppercase">Lowest Bid</span>
+                                    <span className={`font-bold ${lowest ? 'text-emerald-600' : 'text-slate-400'}`}>{lowest ? `₹${lowest}` : '-'}</span>
+                                 </div>
+                              </div>
+
+                              {myBid ? (
+                                 <div className="mt-auto bg-emerald-50 text-emerald-800 p-3 rounded-xl font-bold text-sm text-center border border-emerald-100">
+                                    You Bid ₹{myBid.amount}
+                                 </div>
+                              ) : (
+                                 <button 
+                                    onClick={() => initiateBid(req.id)}
+                                    className="mt-auto w-full bg-slate-900 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-slate-200 hover:shadow-emerald-200 transition-all active:scale-95"
+                                 >
+                                    Place Bid
+                                 </button>
+                              )}
+                           </div>
+                        );
+                     })}
+                  </div>
+                </>
+             )}
+
+             {viewState === 'DASHBOARD' && currentUser && (
+                <SellerDashboard sellerName={currentUser.vendorName!} requests={requests} />
+             )}
+           </div>
+        )}
+      </main>
+
+      {/* Modals */}
+      {isAuthModalOpen && (
+        <AuthModal 
+          onClose={() => setIsAuthModalOpen(false)} 
+          onLogin={(user) => { handleLogin(user); setIsAuthModalOpen(false); }}
+          initialRole={activeRole}
+          cityVendors={CITY_VENDORS}
+        />
+      )}
+
+      {isBidModalOpen && selectedRequest && (
+        <BidModal 
+          request={selectedRequest}
+          sellerName={currentUser?.vendorName || currentVendor}
+          onClose={() => setIsBidModalOpen(false)}
+          onSubmit={handlePlaceBid}
+        />
+      )}
+
+      {isPaymentModalOpen && selectedRequest && selectedBidForPayment && (
+         <PaymentModal 
+            request={selectedRequest}
+            bid={selectedBidForPayment}
+            onClose={() => setIsPaymentModalOpen(false)}
+            onConfirm={handleConfirmPayment}
+         />
+      )}
+
+    </div>
+  );
+}

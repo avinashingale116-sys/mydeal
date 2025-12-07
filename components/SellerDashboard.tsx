@@ -51,7 +51,7 @@ const SellerDashboard: React.FC<SellerDashboardProps> = ({ sellerName, requests 
            </div>
            <div>
              <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Total Revenue</p>
-             <p className="text-3xl font-extrabold text-slate-900">${totalRevenue}</p>
+             <p className="text-3xl font-extrabold text-slate-900">₹{totalRevenue}</p>
            </div>
         </div>
       </div>
@@ -76,7 +76,7 @@ const SellerDashboard: React.FC<SellerDashboardProps> = ({ sellerName, requests 
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-extrabold text-emerald-800">${bid.amount}</p>
+                        <p className="font-extrabold text-emerald-800">₹{bid.amount}</p>
                         <p className="text-[10px] text-emerald-600 font-bold uppercase">Sold</p>
                       </div>
                    </div>
@@ -105,12 +105,12 @@ const SellerDashboard: React.FC<SellerDashboardProps> = ({ sellerName, requests 
                                {isWinning ? (
                                  <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Winning</span>
                                ) : (
-                                 <span className="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold">Losing by ${bid.amount - lowest}</span>
+                                 <span className="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold">Losing by ₹{bid.amount - lowest}</span>
                                )}
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-slate-900">${bid.amount}</p>
+                            <p className="font-bold text-slate-900">₹{bid.amount}</p>
                             <p className="text-xs text-slate-400">Your Bid</p>
                           </div>
                        </div>

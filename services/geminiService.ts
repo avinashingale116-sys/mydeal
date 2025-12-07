@@ -41,14 +41,14 @@ const analysisSchema: Schema = {
     estimatedMarketPrice: {
       type: Type.OBJECT,
       properties: {
-        min: { type: Type.NUMBER, description: "Minimum realistic market price." },
-        max: { type: Type.NUMBER, description: "Maximum realistic market price." }
+        min: { type: Type.NUMBER, description: "Minimum realistic market price in INR." },
+        max: { type: Type.NUMBER, description: "Maximum realistic market price in INR." }
       },
       required: ["min", "max"]
     },
     suggestedMaxBudget: {
       type: Type.NUMBER,
-      description: "A recommended maximum budget cap for the user."
+      description: "A recommended maximum budget cap for the user in INR."
     }
   },
   required: ["title", "category", "specs", "estimatedMarketPrice", "suggestedMaxBudget"]
@@ -57,7 +57,7 @@ const analysisSchema: Schema = {
 const bidSuggestionSchema: Schema = {
   type: Type.OBJECT,
   properties: {
-    suggestedPrice: { type: Type.NUMBER, description: "The recommended bid amount to be competitive yet profitable." },
+    suggestedPrice: { type: Type.NUMBER, description: "The recommended bid amount to be competitive yet profitable (INR)." },
     reasoning: { type: Type.STRING, description: "A brief explanation of why this price is recommended based on market data and existing bids." },
     winProbability: { type: Type.STRING, description: "Estimated probability of winning with this bid (e.g., 'High', 'Medium', 'Low')." }
   },
@@ -75,11 +75,11 @@ export const analyzeRequirement = async (userInput: string): Promise<AIAnalysisR
       model: "gemini-2.5-flash",
       contents: `The user wants to buy a product but might not know the technical details or best price. 
       Analyze this input: "${userInput}". 
-      Extract specifications, infer missing standard details for a good purchase, and estimate current market price in USD.`,
+      Extract specifications, infer missing standard details for a good purchase, and estimate current market price in INR (Indian Rupees).`,
       config: {
         responseMimeType: "application/json",
         responseSchema: analysisSchema,
-        systemInstruction: "You are a helpful procurement assistant. Your goal is to turn vague buyer requests into structured, professional Request for Quotations (RFQs) that sellers can easily bid on. Be realistic with price estimates."
+        systemInstruction: "You are a helpful procurement assistant. Your goal is to turn vague buyer requests into structured, professional Request for Quotations (RFQs) that sellers can easily bid on. Be realistic with price estimates in INR."
       }
     });
 
@@ -107,8 +107,8 @@ export const getBidSuggestion = async (
     const prompt = `
       I am a seller on a reverse auction platform.
       Product: "${title}"
-      Estimated Market Price Range: $${marketPrice.min} - $${marketPrice.max}
-      Current Competitor Bids (lowest first): ${currentBids.length > 0 ? currentBids.sort((a,b)=>a-b).map(b => `$${b}`).join(', ') : 'No bids yet'}
+      Estimated Market Price Range: ₹${marketPrice.min} - ₹${marketPrice.max}
+      Current Competitor Bids (lowest first): ${currentBids.length > 0 ? currentBids.sort((a,b)=>a-b).map(b => `₹${b}`).join(', ') : 'No bids yet'}
       
       Suggest an optimal bid price that maximizes my chance of winning while maintaining a reasonable margin.
     `;
@@ -119,7 +119,7 @@ export const getBidSuggestion = async (
       config: {
         responseMimeType: "application/json",
         responseSchema: bidSuggestionSchema,
-        systemInstruction: "You are a strategic pricing AI assistant for sellers. Analyze the competition and market data to suggest a winning bid price."
+        systemInstruction: "You are a strategic pricing AI assistant for sellers. Analyze the competition and market data to suggest a winning bid price in INR."
       }
     });
 

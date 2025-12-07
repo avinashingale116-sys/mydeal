@@ -114,12 +114,12 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
               <div className="bg-emerald-50 p-5 rounded-2xl border border-emerald-100">
                 <p className="text-[10px] text-emerald-600 uppercase font-bold tracking-wider mb-1">Est. Market Price</p>
                 <p className="font-extrabold text-emerald-700 text-xl">
-                  ${analysis.estimatedMarketPrice.min} - ${analysis.estimatedMarketPrice.max}
+                  ₹{analysis.estimatedMarketPrice.min} - ₹{analysis.estimatedMarketPrice.max}
                 </p>
               </div>
               <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100">
                 <p className="text-[10px] text-blue-600 uppercase font-bold tracking-wider mb-1">Suggested Max Budget</p>
-                <p className="font-extrabold text-blue-700 text-xl">${analysis.suggestedMaxBudget}</p>
+                <p className="font-extrabold text-blue-700 text-xl">₹{analysis.suggestedMaxBudget}</p>
               </div>
             </div>
 
