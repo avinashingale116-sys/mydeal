@@ -259,23 +259,6 @@ function App() {
                </div>
             </div>
 
-            {/* Category Selector */}
-            <div className="relative group hidden sm:block">
-               <div className="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 rounded-full px-4 py-1.5 border border-slate-700/50 transition-all cursor-pointer">
-                  <TagIcon className="w-4 h-4 text-orange-500" />
-                  <select 
-                      value={currentCategory}
-                      onChange={(e) => setCurrentCategory(e.target.value)}
-                      className="bg-transparent text-slate-200 text-sm font-bold outline-none appearance-none cursor-pointer pr-1"
-                  >
-                      {CATEGORIES.map(cat => (
-                          <option key={cat} value={cat} className="bg-slate-900 text-white py-2">{cat}</option>
-                      ))}
-                  </select>
-                  <ChevronDownIcon className="w-3 h-3 text-slate-500 pointer-events-none" />
-               </div>
-            </div>
-
             {/* Home Tab - Visible on all pages EXCEPT Landing Page */}
             {view !== 'landing' && (
               <button 
