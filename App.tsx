@@ -15,7 +15,7 @@ const CITY_VENDORS: Record<string, string[]> = {
   'Kolhapur': ['ORANGE HOME APPLIANCES', 'NOVE APPLIANCES', 'Wheel World']
 };
 
-const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Mobile', 'Washing Machine'];
+const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Mobile', 'Washing Machine', 'Tyres'];
 
 // --- Mock Data ---
 const MOCK_REQUESTS: ProductRequirement[] = [
@@ -445,366 +445,255 @@ function App() {
                 Don't <span className="text-rose-600">overpay.</span>
               </h1>
               <h2 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900 mb-6 text-center leading-tight max-w-3xl">
-                The smartest way to buy Home Appliances.
+                The smartest way to buy Home Appliances & Tyres.
               </h2>
               <p className="text-lg text-slate-600 font-medium mb-10 text-center max-w-2xl leading-relaxed">
-                Local verified sellers compete to give you the lowest and best price.
+                Stop overpaying for appliances. Post your requirement and let local sellers compete to give you the best price within 24 hours.
               </p>
 
-              {/* CTA Section */}
-              <div className="flex flex-col items-center gap-4 mb-16 w-full max-w-md">
-                <button
-                  onClick={() => setView('dashboard')}
-                  className="w-full bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white text-xl font-bold py-5 rounded-2xl shadow-xl shadow-rose-200 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
-                >
-                  Start Saving Now
-                  <span className="bg-white/20 rounded-full p-1"><ChevronDownIcon className="w-4 h-4 -rotate-90" /></span>
-                </button>
-                
-                <div className="flex items-center gap-4 text-sm font-bold text-slate-500 bg-white/50 px-4 py-2 rounded-xl border border-white/50">
-                  <span className="flex items-center gap-1.5 text-slate-700">
-                    <CheckCircleIcon className="w-4 h-4 text-emerald-500" />
-                    100+ Verified Sellers
-                  </span>
-                  <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                  <span className="flex items-center gap-1.5 text-slate-700">
-                    <TrendingDownIcon className="w-4 h-4 text-rose-500" />
-                    30% Avg Saving
-                  </span>
-                </div>
-              </div>
-
-              {/* Product List Section */}
-              <div className="flex flex-col items-center w-full max-w-5xl mb-20">
-                <h3 className="text-xl font-bold text-slate-400 uppercase tracking-widest mb-8">Our Product List</h3>
-                
-                <div className="flex flex-wrap justify-center gap-4 md:gap-6 opacity-90 hover:opacity-100 transition-opacity">
-                  {[
-                    { id: 'AC', label: 'AC', icon: '❄️' },
-                    { id: 'Fridge', label: 'Fridge', icon: '🧊' },
-                    { id: 'TV', label: 'TV', icon: '📺' },
-                    { id: 'Mobile', label: 'Mobile', icon: '📱' },
-                    { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' }
-                  ].map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setCurrentCategory(cat.id)}
-                      className={`group relative flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 bg-white/60 hover:bg-white backdrop-blur-md rounded-2xl shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-rose-100 transition-all duration-300 transform hover:-translate-y-1 border ${currentCategory === cat.id ? 'border-rose-500 ring-2 ring-rose-200' : 'border-slate-100'}`}
-                    >
-                      <span className="text-3xl md:text-4xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
-                        {cat.icon}
-                      </span>
-                      <span className={`font-bold text-[10px] md:text-xs transition-colors uppercase tracking-wide ${currentCategory === cat.id ? 'text-rose-600' : 'text-slate-600 group-hover:text-rose-600'}`}>
-                        {cat.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* How it Works Section */}
-              <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
-                 <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl shadow-inner">1</div>
-                    <h3 className="font-bold text-slate-900 text-lg mb-2">Post Requirement</h3>
-                    <p className="text-slate-500 text-sm">Tell us what you need. AI helps you define the exact model specs.</p>
-                 </div>
-                 <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl shadow-inner">2</div>
-                    <h3 className="font-bold text-slate-900 text-lg mb-2">Sellers Compete</h3>
-                    <p className="text-slate-500 text-sm">Local verified dealers place competitive bids for your business.</p>
-                 </div>
-                 <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl shadow-inner">3</div>
-                    <h3 className="font-bold text-slate-900 text-lg mb-2">Get Best Price</h3>
-                    <p className="text-slate-500 text-sm">Choose the best offer and close the deal securely.</p>
-                 </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in slide-in-from-bottom-8 duration-1000 delay-150">
+              <button 
+                onClick={() => openAuth(UserRole.BUYER)}
+                className="group relative px-8 py-4 bg-slate-900 text-white font-bold rounded-full text-lg shadow-xl shadow-rose-900/20 overflow-hidden hover:scale-105 transition-transform"
+              >
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-500 via-orange-500 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient" />
+                <span className="relative flex items-center gap-2">
+                  Start Saving Now <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </span>
+              </button>
+              <button onClick={() => openAuth(UserRole.SELLER)} className="text-sm font-bold text-slate-500 hover:text-slate-800 underline decoration-slate-300 underline-offset-4">
+                Are you a Seller? Join here
+              </button>
               </div>
             </div>
         )}
 
-        {/* DASHBOARD / MARKETPLACE VIEW */}
-        {view !== 'landing' && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Header / Tabs */}
-            <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-8 gap-4">
-              <div>
-                <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                  {view === 'create_request' ? 'New Request' : (user?.role === UserRole.SELLER ? 'Marketplace' : 'Live Requests')}
-                </h2>
-                <div className="flex items-center gap-2 text-slate-500 font-medium">
-                  {view === 'create_request' ? (
-                     <span>Let AI help you define what you need</span>
-                  ) : (
-                    <>
-                       <span className="hidden sm:inline">Showing deals in</span>
-                       <div className="flex items-center gap-1 bg-white/50 px-2 py-1 rounded-lg border border-slate-200">
-                          <MapPinIcon className="w-3 h-3 text-rose-500" />
-                          <select 
-                              value={currentCity}
-                              onChange={(e) => setCurrentCity(e.target.value)}
-                              disabled={user?.role === UserRole.SELLER}
-                              className="bg-transparent border-none text-slate-900 font-bold cursor-pointer outline-none text-sm disabled:cursor-not-allowed"
-                          >
-                                {Object.keys(CITY_VENDORS).map(city => (
-                                  <option key={city} value={city}>{city}</option>
-                              ))}
-                          </select>
-                       </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {view === 'dashboard' && (user?.role === UserRole.BUYER || !user) && (
-                <button 
-                  onClick={() => user ? setView('create_request') : openAuth(UserRole.BUYER)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-200 transition-all flex items-center gap-2"
-                >
-                  <PlusIcon className="w-5 h-5" />
-                  New Request
-                </button>
-              )}
-            </div>
-
-            {/* Content Switcher */}
-            {view === 'create_request' ? (
-              <div>
-                <button 
-                  onClick={() => setView('dashboard')}
-                  className="mb-4 text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1"
-                >
-                  ← Back to Dashboard
-                </button>
-                <RequestForm 
-                  onSubmit={handlePostRequest} 
-                  onCancel={() => setView('dashboard')} 
-                />
-              </div>
+        {/* DASHBOARD VIEW */}
+        {view === 'dashboard' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {user?.role === UserRole.SELLER ? (
+               <SellerDashboard sellerName={user.vendorName!} requests={requests} />
             ) : (
-               <>
-                 {/* Seller Stats if Seller */}
-                 {user?.role === UserRole.SELLER && (
-                    <SellerDashboard sellerName={user.vendorName!} requests={requests} />
-                 )}
+               // Buyer & Public Dashboard Logic
+               <div className="space-y-8">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <h2 className="text-3xl font-extrabold text-slate-900">
+                        {user ? 'Your Requests' : 'Live Deals'}
+                      </h2>
+                      <p className="text-slate-500">
+                        {user ? 'Manage your product requirements and check bids.' : `Browse active requests in ${currentCity}.`}
+                      </p>
+                    </div>
+                    
+                    {/* Only show Create Request if user is logged in as Buyer */}
+                    {user && (
+                        <button 
+                          onClick={() => setView('create_request')}
+                          className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-slate-300 transition-all hover:scale-105"
+                        >
+                          <PlusIcon className="w-5 h-5" />
+                          New Request
+                        </button>
+                    )}
+                  </div>
 
-                 {/* Filters */}
-                 <div className="flex gap-2 overflow-x-auto pb-4 mb-2 custom-scrollbar">
-                   {CATEGORIES.map(cat => (
-                     <button
-                       key={cat}
-                       onClick={() => setCurrentCategory(cat)}
-                       className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all border ${
-                         currentCategory === cat 
-                           ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
-                           : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
-                       }`}
-                     >
-                       {cat}
-                     </button>
-                   ))}
-                 </div>
+                  {/* Filters */}
+                  <div className="flex flex-wrap gap-2">
+                    {CATEGORIES.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setCurrentCategory(cat)}
+                        className={`px-4 py-2 rounded-full font-bold text-sm transition-all border ${
+                          currentCategory === cat 
+                            ? 'bg-slate-900 text-white border-slate-900' 
+                            : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
 
-                 {/* Request Grid */}
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                   {filteredRequests.length === 0 ? (
-                      <div className="col-span-full py-20 text-center bg-white/50 rounded-3xl border border-dashed border-slate-300">
-                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-                           <SearchIcon className="w-8 h-8" />
+                  {/* Empty State */}
+                  {filteredRequests.length === 0 && (
+                     <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <SearchIcon className="w-8 h-8 text-slate-300" />
                         </div>
-                        <p className="text-slate-500 font-bold text-lg">No requests found</p>
-                        <p className="text-slate-400 text-sm">Try changing filters or location</p>
-                      </div>
-                   ) : (
-                     filteredRequests.map(req => (
-                       <div key={req.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative overflow-hidden group">
-                         {req.status === RequestStatus.CLOSED && (
-                           <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl z-10">
-                             DEAL CLOSED
-                           </div>
-                         )}
-                         
-                         <div className="flex justify-between items-start mb-4">
-                           <span className="inline-block px-3 py-1 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-200">
-                             {req.category}
-                           </span>
-                           <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
-                             <ClockIcon className="w-3 h-3" />
-                             {Math.floor((Date.now() - req.createdAt) / 60000)}m ago
-                           </span>
-                         </div>
+                        <h3 className="text-xl font-bold text-slate-900 mb-1">No requests found</h3>
+                        <p className="text-slate-500 mb-6">Try changing filters or location</p>
+                        {user && (
+                          <button 
+                            onClick={() => setView('create_request')}
+                            className="text-rose-600 font-bold hover:underline"
+                          >
+                            Post a new requirement
+                          </button>
+                        )}
+                     </div>
+                  )}
 
-                         <h3 className="font-bold text-slate-900 text-lg leading-tight mb-2 line-clamp-2 min-h-[3.5rem]" title={req.title}>
-                           {req.title}
-                         </h3>
-
-                         <div className="flex flex-wrap gap-2 mb-4">
-                            {Object.entries(req.specs).slice(0, 3).map(([k, v]) => (
-                              <span key={k} className="text-[10px] bg-slate-50 text-slate-500 px-2 py-1 rounded border border-slate-100 font-medium">
-                                {String(v)}
-                              </span>
-                            ))}
-                            {Object.keys(req.specs).length > 3 && (
-                              <span className="text-[10px] bg-slate-50 text-slate-400 px-2 py-1 rounded border border-slate-100 font-bold">
-                                +{Object.keys(req.specs).length - 3}
-                              </span>
-                            )}
-                         </div>
-
-                         <div className="bg-slate-50 rounded-xl p-3 mb-4 flex justify-between items-center border border-slate-100">
-                            <div>
-                              <p className="text-[10px] font-bold text-slate-400 uppercase">Est. Market Price</p>
-                              <p className="text-sm font-bold text-slate-700">₹{req.estimatedMarketPrice.min.toLocaleString()} - {req.estimatedMarketPrice.max.toLocaleString()}</p>
+                  {/* Request Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredRequests.map(req => {
+                      const lowestBid = req.bids.length > 0 ? Math.min(...req.bids.map(b => b.amount)) : null;
+                      
+                      return (
+                        <div key={req.id} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 flex flex-col h-full group">
+                          <div className="p-6 flex-1 flex flex-col">
+                            <div className="flex justify-between items-start mb-4">
+                               <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full border border-slate-200 group-hover:bg-slate-200 transition-colors">
+                                 {req.category}
+                               </span>
+                               <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${req.status === RequestStatus.OPEN ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                                 {req.status}
+                               </span>
                             </div>
-                            <div className="text-right">
-                              <p className="text-[10px] font-bold text-slate-400 uppercase">Bids</p>
-                              <p className="text-lg font-extrabold text-rose-600">{req.bids.length}</p>
+                            
+                            <h3 className="font-bold text-lg text-slate-900 mb-2 line-clamp-2 leading-tight group-hover:text-rose-600 transition-colors">
+                              {req.title}
+                            </h3>
+                            
+                            {/* Specs Tags */}
+                            <div className="flex flex-wrap gap-1.5 mb-4">
+                               {Object.entries(req.specs).slice(0, 3).map(([k, v]) => (
+                                 <span key={k} className="px-2 py-1 bg-slate-50 border border-slate-100 rounded text-[10px] font-semibold text-slate-500 truncate max-w-[120px]">
+                                   {String(v)}
+                                 </span>
+                               ))}
                             </div>
-                         </div>
-                         
-                         {/* Action Buttons based on Role */}
-                         {user?.role === UserRole.SELLER ? (
-                            <button 
-                              onClick={() => { setSelectedRequest(req); setIsBidding(true); }}
-                              disabled={req.status !== RequestStatus.OPEN || req.bids.some(b => b.sellerName === user.vendorName)}
-                              className="w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 bg-slate-900 text-white hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
-                            >
-                              {req.bids.some(b => b.sellerName === user.vendorName) ? (
-                                <>
-                                  <CheckCircleIcon className="w-4 h-4" /> Bid Placed
-                                </>
-                              ) : req.status === RequestStatus.CLOSED ? (
-                                'Offer Closed'
-                              ) : (
-                                'Place Bid'
-                              )}
-                            </button>
-                         ) : (
-                            <div className="space-y-2">
-                               {req.bids.length > 0 ? (
-                                 <div className="space-y-2">
-                                   <p className="text-xs font-bold text-slate-500 uppercase">Offers ({req.bids.length})</p>
-                                   {req.bids.sort((a,b) => a.amount - b.amount).map((bid, idx) => (
-                                     <div key={bid.id} className="flex justify-between items-center p-2 rounded-lg border border-slate-100 bg-white hover:border-rose-200 transition-colors">
-                                        <div className="flex-1 min-w-0 mr-2">
-                                          <p className="font-bold text-slate-900 text-sm truncate">{bid.sellerName}</p>
-                                          <p className="text-[10px] text-slate-500">{bid.deliveryDays} Day Delivery</p>
-                                        </div>
-                                        <div className="text-right">
-                                           <p className="font-bold text-slate-900 text-sm">₹{bid.amount}</p>
-                                           {user?.role === UserRole.BUYER && req.status === RequestStatus.OPEN && (
-                                              <button 
-                                                onClick={() => handleAcceptBid(req, bid)}
-                                                className="text-[10px] bg-slate-900 text-white px-2 py-1 rounded mt-1 font-bold hover:bg-emerald-600 transition-colors"
-                                              >
-                                                Accept
-                                              </button>
-                                           )}
-                                        </div>
-                                     </div>
-                                   ))}
-                                 </div>
-                               ) : (
-                                 <div className="text-center py-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                                    <p className="text-xs text-slate-400 font-bold">Waiting for sellers...</p>
-                                 </div>
-                               )}
-                               
-                               {req.status === RequestStatus.CLOSED && req.winningBidId && (
-                                  <div className="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
-                                     <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                                        <CheckCircleIcon className="w-4 h-4" />
-                                     </div>
-                                     <div>
-                                        <p className="text-xs font-bold text-emerald-800 uppercase">Deal Closed</p>
-                                        <p className="text-xs text-emerald-600">Won by {req.bids.find(b => b.id === req.winningBidId)?.sellerName}</p>
-                                     </div>
+
+                            <div className="mt-auto pt-4 border-t border-slate-100">
+                               <div className="flex justify-between items-end">
+                                  <div>
+                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Market Estimate</p>
+                                     <p className="text-sm font-bold text-slate-500 line-through decoration-rose-500/50">₹{req.estimatedMarketPrice.max.toLocaleString('en-IN')}</p>
                                   </div>
-                               )}
+                                  <div className="text-right">
+                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Best Offer</p>
+                                     {lowestBid ? (
+                                        <p className="text-xl font-extrabold text-emerald-600">₹{lowestBid.toLocaleString('en-IN')}</p>
+                                     ) : (
+                                        <p className="text-sm font-bold text-slate-400 italic">No bids yet</p>
+                                     )}
+                                  </div>
+                               </div>
                             </div>
-                         )}
-                       </div>
-                     ))
-                   )}
-                 </div>
-               </>
+                          </div>
+
+                          {/* Action Footer */}
+                          <div className="bg-slate-50 p-4 border-t border-slate-100 flex items-center justify-between">
+                             <div className="flex items-center gap-1.5 text-slate-400">
+                                <ClockIcon className="w-4 h-4" />
+                                <span className="text-xs font-bold">24h left</span>
+                             </div>
+                             
+                             {user?.role === UserRole.BUYER ? (
+                               <button 
+                                 className="text-sm font-bold text-slate-700 hover:text-slate-900 flex items-center gap-1"
+                                 onClick={() => {
+                                    // For simplicity in this demo, just expand to show bids could go here
+                                    // But we will use the same BidModal/PaymentModal structure if we had a detailed view.
+                                    // For now, let's just show a simple text if it's their request
+                                    if(req.bids.length > 0) {
+                                      // Auto select first bid to demonstrate acceptance flow in this simple view
+                                      handleAcceptBid(req, req.bids[0]); 
+                                    }
+                                 }}
+                               >
+                                 {req.bids.length} Bids <ChevronDownIcon className="w-3 h-3" />
+                               </button>
+                             ) : (
+                               <button 
+                                 onClick={() => {
+                                   if (!user) {
+                                     openAuth(UserRole.SELLER);
+                                   } else {
+                                     setSelectedRequest(req);
+                                     setIsBidding(true);
+                                   }
+                                 }}
+                                 disabled={req.status !== RequestStatus.OPEN}
+                                 className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md transition-all active:scale-95"
+                               >
+                                 {req.status === RequestStatus.OPEN ? (user ? 'Place Bid' : 'Login to Bid') : 'Closed'}
+                               </button>
+                             )}
+                          </div>
+                          
+                          {/* Expanded Bids Section for Owner (Simplified for Demo) */}
+                          {user?.id === req.userId && req.bids.length > 0 && (
+                            <div className="bg-slate-100/50 p-4 border-t border-slate-200 space-y-3">
+                               <p className="text-[10px] uppercase font-bold text-slate-400">Received Bids</p>
+                               {req.bids.map(bid => (
+                                 <div key={bid.id} className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                                    <div>
+                                       <p className="font-bold text-slate-900 text-sm">{bid.sellerName}</p>
+                                       <p className="text-xs text-slate-500">{bid.deliveryDays} Day Delivery</p>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                       <span className="font-bold text-emerald-600">₹{bid.amount}</span>
+                                       {req.status === RequestStatus.OPEN && (
+                                         <button 
+                                           onClick={() => handleAcceptBid(req, bid)}
+                                           className="bg-emerald-50 text-emerald-600 hover:bg-emerald-100 p-1.5 rounded-lg transition-colors"
+                                           title="Accept Offer"
+                                         >
+                                            <CheckCircleIcon className="w-4 h-4" />
+                                         </button>
+                                       )}
+                                    </div>
+                                 </div>
+                               ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+               </div>
             )}
           </div>
         )}
+
+        {/* CREATE REQUEST VIEW */}
+        {view === 'create_request' && (
+          <RequestForm 
+            onSubmit={handlePostRequest} 
+            onCancel={() => setView('dashboard')} 
+          />
+        )}
       </main>
 
-      <footer className="bg-slate-900 text-slate-400 py-12 mt-auto border-t border-slate-800">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4 text-white">
-              <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center font-bold text-sm">M</div>
-              <span className="font-bold text-lg">My Deal 24</span>
-            </div>
-            <p className="text-sm leading-relaxed mb-4">
-              Empowering buyers with the best local prices through competitive reverse bidding.
-            </p>
-          </div>
-          
-          <div>
-            <h4 className="text-white font-bold mb-4">Platform</h4>
-            <ul className="space-y-2 text-sm">
-              <li><button className="hover:text-rose-400 transition-colors text-left">How it Works</button></li>
-              <li><button className="hover:text-rose-400 transition-colors text-left">Browse Deals</button></li>
-              <li><button className="hover:text-rose-400 transition-colors text-left">For Sellers</button></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-4">Support</h4>
-            <ul className="space-y-2 text-sm">
-              <li><button className="hover:text-rose-400 transition-colors text-left">Help Center</button></li>
-              <li><button className="hover:text-rose-400 transition-colors text-left">Safety Guidelines</button></li>
-              <li><button className="hover:text-rose-400 transition-colors text-left">Contact Us</button></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li><button className="hover:text-rose-400 transition-colors text-left">Terms of Service</button></li>
-              <li><button className="hover:text-rose-400 transition-colors text-left">Privacy Policy</button></li>
-              <li><button className="hover:text-rose-400 transition-colors text-left">Cookie Policy</button></li>
-            </ul>
-          </div>
-        </div>
-        
-        <div className="max-w-6xl mx-auto px-4 pt-8 border-t border-slate-800 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} My Deal 24. All rights reserved.</p>
-        </div>
-      </footer>
-
-      {/* Modals */}
+      {/* MODALS */}
       {showAuthModal && (
         <AuthModal 
-          onClose={() => setShowAuthModal(false)} 
-          onLogin={handleLogin}
           initialRole={authInitialRole}
           cityVendors={CITY_VENDORS}
+          onClose={() => setShowAuthModal(false)}
+          onLogin={handleLogin}
         />
       )}
 
-      {selectedRequest && isBidding && user?.role === UserRole.SELLER && (
+      {selectedRequest && isBidding && (
         <BidModal 
           request={selectedRequest}
-          sellerName={user.vendorName!}
-          onClose={() => { setSelectedRequest(null); setIsBidding(false); }}
+          sellerName={user?.vendorName || 'Unknown Seller'}
+          onClose={() => { setIsBidding(false); setSelectedRequest(null); }}
           onSubmit={handlePlaceBid}
         />
       )}
 
-      {selectedRequest && activeBidToPay && user?.role === UserRole.BUYER && (
-        <PaymentModal
-          request={selectedRequest}
-          bid={activeBidToPay}
-          onClose={() => { setSelectedRequest(null); setActiveBidToPay(null); }}
-          onConfirm={handlePaymentComplete}
+      {selectedRequest && activeBidToPay && (
+        <PaymentModal 
+           request={selectedRequest}
+           bid={activeBidToPay}
+           onClose={() => { setActiveBidToPay(null); setSelectedRequest(null); }}
+           onConfirm={handlePaymentComplete}
         />
       )}
+      
     </div>
   );
 }
