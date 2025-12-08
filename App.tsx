@@ -6,16 +6,16 @@ import AuthModal from './components/AuthModal';
 import PaymentModal from './components/PaymentModal';
 import SellerDashboard from './components/SellerDashboard';
 import NotificationPanel from './components/NotificationPanel';
-import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, CheckCircleIcon, SearchIcon, MapPinIcon, XMarkIcon, SparklesIcon, LayoutDashboardIcon, BellIcon, ChevronDownIcon, HomeIcon, TrendingDownIcon } from './components/Icons';
+import { UserIcon, StoreIcon, PlusIcon, TagIcon, ClockIcon, CheckCircleIcon, SearchIcon, MapPinIcon, XMarkIcon, SparklesIcon, LayoutDashboardIcon, BellIcon, ChevronDownIcon, HomeIcon, TrendingDownIcon, BanknotesIcon } from './components/Icons';
 
 // --- Constants ---
 const CITY_VENDORS: Record<string, string[]> = {
-  'Satara': ['RAJDHANI HOME APPLIANCES', 'Shisa Appliances', 'E STORE', 'Tyre Empire', 'Speedy Wheels'],
-  'Kolhapur': ['ORANGE HOME APPLIANCES', 'NOVE APPLIANCES', 'Wheel World', 'AutoZone Tyres'],
-  'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES', 'Car Care Hub', 'Pune Tyre Center']
+  'Satara': ['RAJDHANI HOME APPLIANCES', 'Shisa Appliances', 'E STORE', 'Speedy Wheels'],
+  'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES', 'Car Care Hub'],
+  'Kolhapur': ['ORANGE HOME APPLIANCES', 'NOVE APPLIANCES', 'Wheel World']
 };
 
-const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Mobile', 'Washing Machine', 'Car Tyres'];
+const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Mobile', 'Washing Machine'];
 
 // --- Mock Data ---
 const MOCK_REQUESTS: ProductRequirement[] = [
@@ -91,24 +91,6 @@ const MOCK_REQUESTS: ProductRequirement[] = [
     status: RequestStatus.OPEN,
     createdAt: Date.now() - 300000,
     location: 'Kolhapur'
-  },
-  {
-    id: 'req-mock-5',
-    userId: 'u-buyer-5',
-    title: 'Michelin Primacy 4 ST 205/55 R16 Tubeless Car Tyre',
-    category: 'Car Tyres',
-    description: 'Need 4 new tyres for my Honda City. Price should include alignment and balancing.',
-    specs: {
-      brand: 'Michelin',
-      model: 'Primacy 4 ST',
-      size: '205/55 R16',
-      type: 'Tubeless'
-    },
-    estimatedMarketPrice: { min: 8500, max: 9800 },
-    bids: [],
-    status: RequestStatus.OPEN,
-    createdAt: Date.now() - 150000,
-    location: 'Satara'
   }
 ];
 
@@ -121,7 +103,7 @@ function App() {
   const [currentCity, setCurrentCity] = useState('Satara');
   const [currentCategory, setCurrentCategory] = useState('All');
   
-  // View State - Default to Landing as requested
+  // View State - Default to Landing
   const [view, setView] = useState<ViewState>('landing');
   
   // Modal States
@@ -148,7 +130,6 @@ function App() {
         if (filter === 'fridge') return cat.includes('refrigerator') || cat.includes('fridge');
         if (filter === 'ac') return cat.includes('air condition') || cat.includes('ac');
         if (filter === 'tv') return cat.includes('television') || cat.includes('tv');
-        if (filter === 'car tyres') return cat.includes('tyre') || cat.includes('tire') || cat.includes('wheel');
         if (filter === 'mobile') return cat.includes('phone') || cat.includes('mobile');
         
         return cat.includes(filter);
@@ -381,6 +362,7 @@ function App() {
                   title="Go to Dashboard"
                 >
                   <span className="text-sm font-bold text-slate-100 group-hover:text-rose-400 transition-colors">{user.name}</span>
+                  <span className="text-sm font-bold text-slate-400">|</span>
                   <span className="text-[10px] uppercase font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-full border border-slate-700 group-hover:border-rose-500/50 transition-colors">
                     {user.role}
                   </span>
@@ -435,45 +417,108 @@ function App() {
       <main className="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
         {/* LANDING PAGE VIEW */}
         {view === 'landing' && (
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] relative z-10 px-4 animate-in fade-in duration-700">
+            <div className="flex flex-col items-center justify-center relative z-10 px-4 animate-in fade-in duration-700 py-10">
               
               {/* Decorative background blob */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-200/30 rounded-full blur-3xl -z-10 animate-blob" />
               
-              <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight text-center leading-tight">
-                What are you <br className="md:hidden"/>looking for?
+              {/* Location Selector Display */}
+              <div className="bg-white/80 backdrop-blur rounded-full pl-5 pr-2 py-1.5 mb-8 border border-slate-200 shadow-sm flex items-center gap-2 animate-in slide-in-from-top-4 duration-700 relative z-20">
+                 <MapPinIcon className="w-4 h-4 text-rose-500" />
+                 <span className="font-bold text-slate-600 text-sm hidden sm:inline">Location:</span>
+                 
+                 <div className="relative group">
+                    <select 
+                        value={currentCity}
+                        onChange={(e) => setCurrentCity(e.target.value)}
+                        className="appearance-none bg-white hover:bg-slate-50 text-slate-900 font-extrabold text-sm pl-3 pr-8 py-1.5 rounded-full border border-slate-200 hover:border-slate-300 cursor-pointer outline-none transition-all focus:ring-2 focus:ring-rose-100 shadow-sm"
+                    >
+                        {Object.keys(CITY_VENDORS).map(city => (
+                          <option key={city} value={city}>{city}</option>
+                        ))}
+                    </select>
+                    <ChevronDownIcon className="w-3 h-3 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-slate-600" />
+                 </div>
+              </div>
+
+              <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-2 tracking-tight text-center leading-none">
+                Don't <span className="text-rose-600">overpay.</span>
               </h1>
-              <p className="text-lg text-slate-600 font-medium mb-12 text-center max-w-2xl">
-                Get the best price for Fridge, AC, Car Tyres, and more. Buyers submit requirements, sellers bid to compete.
+              <h2 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900 mb-6 text-center leading-tight max-w-3xl">
+                The smartest way to buy Home Appliances.
+              </h2>
+              <p className="text-lg text-slate-600 font-medium mb-10 text-center max-w-2xl leading-relaxed">
+                Local verified sellers compete to give you the lowest and best price.
               </p>
 
-              <div className="flex flex-wrap justify-center gap-6 max-w-5xl">
-                {[
-                  { id: 'AC', label: 'AC', icon: '❄️' },
-                  { id: 'Fridge', label: 'Fridge', icon: '🧊' },
-                  { id: 'TV', label: 'TV', icon: '📺' },
-                  { id: 'Mobile', label: 'Mobile', icon: '📱' },
-                  { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' },
-                  { id: 'Car Tyres', label: 'Car Tyres', icon: '🛞' }
-                ].map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setCurrentCategory(cat.id);
-                      setView('dashboard');
-                    }}
-                    className="group relative flex flex-col items-center justify-center w-32 h-32 md:w-40 md:h-40 bg-white/80 backdrop-blur-md rounded-3xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-rose-200/40 transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-orange-500/0 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                    
-                    <span className="text-4xl md:text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300 filter drop-shadow-sm">
-                      {cat.icon}
-                    </span>
-                    <span className="font-bold text-slate-700 text-sm md:text-base group-hover:text-rose-600 transition-colors">
-                      {cat.label}
-                    </span>
-                  </button>
-                ))}
+              {/* CTA Section */}
+              <div className="flex flex-col items-center gap-4 mb-16 w-full max-w-md">
+                <button
+                  onClick={() => setView('dashboard')}
+                  className="w-full bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white text-xl font-bold py-5 rounded-2xl shadow-xl shadow-rose-200 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
+                >
+                  Start Saving Now
+                  <span className="bg-white/20 rounded-full p-1"><ChevronDownIcon className="w-4 h-4 -rotate-90" /></span>
+                </button>
+                
+                <div className="flex items-center gap-4 text-sm font-bold text-slate-500 bg-white/50 px-4 py-2 rounded-xl border border-white/50">
+                  <span className="flex items-center gap-1.5 text-slate-700">
+                    <CheckCircleIcon className="w-4 h-4 text-emerald-500" />
+                    100+ Verified Sellers
+                  </span>
+                  <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                  <span className="flex items-center gap-1.5 text-slate-700">
+                    <TrendingDownIcon className="w-4 h-4 text-rose-500" />
+                    30% Avg Saving
+                  </span>
+                </div>
+              </div>
+
+              {/* Product List Section */}
+              <div className="flex flex-col items-center w-full max-w-5xl mb-20">
+                <h3 className="text-xl font-bold text-slate-400 uppercase tracking-widest mb-8">Our Product List</h3>
+                
+                <div className="flex flex-wrap justify-center gap-4 md:gap-6 opacity-90 hover:opacity-100 transition-opacity">
+                  {[
+                    { id: 'AC', label: 'AC', icon: '❄️' },
+                    { id: 'Fridge', label: 'Fridge', icon: '🧊' },
+                    { id: 'TV', label: 'TV', icon: '📺' },
+                    { id: 'Mobile', label: 'Mobile', icon: '📱' },
+                    { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' }
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setCurrentCategory(cat.id)}
+                      className={`group relative flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 bg-white/60 hover:bg-white backdrop-blur-md rounded-2xl shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-rose-100 transition-all duration-300 transform hover:-translate-y-1 border ${currentCategory === cat.id ? 'border-rose-500 ring-2 ring-rose-200' : 'border-slate-100'}`}
+                    >
+                      <span className="text-3xl md:text-4xl mb-2 transform group-hover:scale-110 transition-transform duration-300">
+                        {cat.icon}
+                      </span>
+                      <span className={`font-bold text-[10px] md:text-xs transition-colors uppercase tracking-wide ${currentCategory === cat.id ? 'text-rose-600' : 'text-slate-600 group-hover:text-rose-600'}`}>
+                        {cat.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* How it Works Section */}
+              <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
+                 <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl shadow-inner">1</div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-2">Post Requirement</h3>
+                    <p className="text-slate-500 text-sm">Tell us what you need. AI helps you define the exact model specs.</p>
+                 </div>
+                 <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl shadow-inner">2</div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-2">Sellers Compete</h3>
+                    <p className="text-slate-500 text-sm">Local verified dealers place competitive bids for your business.</p>
+                 </div>
+                 <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl shadow-inner">3</div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-2">Get Best Price</h3>
+                    <p className="text-slate-500 text-sm">Choose the best offer and close the deal securely.</p>
+                 </div>
               </div>
             </div>
         )}

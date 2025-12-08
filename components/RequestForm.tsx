@@ -13,8 +13,7 @@ const CATEGORIES = [
   { id: 'Fridge', label: 'Fridge', icon: '🧊' },
   { id: 'TV', label: 'TV', icon: '📺' },
   { id: 'Mobile', label: 'Mobile', icon: '📱' },
-  { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' },
-  { id: 'Car Tyres', label: 'Car Tyres', icon: '🛞' }
+  { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' }
 ];
 
 // Specific model examples to guide the user
@@ -23,8 +22,7 @@ const PLACEHOLDERS: Record<string, string> = {
   'Fridge': 'e.g., Samsung 236L 3 Star Digital Inverter Frost Free...',
   'TV': 'e.g., Sony Bravia 55 inch 4K Ultra HD Smart LED TV...',
   'Mobile': 'e.g., iPhone 15 Pro Max 256GB Natural Titanium...',
-  'Washing Machine': 'e.g., Bosch 7 kg 5 Star Inverter Touch Control Front Loading...',
-  'Car Tyres': 'e.g., Michelin Primacy 4 ST 205/55 R16 Tubeless...'
+  'Washing Machine': 'e.g., Bosch 7 kg 5 Star Inverter Touch Control Front Loading...'
 };
 
 const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
