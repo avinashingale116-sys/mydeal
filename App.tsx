@@ -18,7 +18,99 @@ const CITY_VENDORS: Record<string, string[]> = {
 const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Washing Machine', 'Car Tyres'];
 
 // --- Mock Data ---
-const MOCK_REQUESTS: ProductRequirement[] = [];
+const MOCK_REQUESTS: ProductRequirement[] = [
+  {
+    id: 'req-mock-1',
+    userId: 'u-buyer-1',
+    title: 'LG 1.5 Ton 5 Star AI DUAL Inverter Split AC',
+    category: 'AC',
+    description: 'Looking for the latest LG model with copper condenser, 5 star rating. Need installation included.',
+    specs: {
+      brand: 'LG',
+      type: 'Split AC',
+      capacity: '1.5 Ton',
+      rating: '5 Star',
+      condenser: 'Copper'
+    },
+    estimatedMarketPrice: { min: 42000, max: 48000 },
+    bids: [
+      {
+        id: 'bid-m-1',
+        sellerName: 'Shisa Appliances',
+        amount: 43500,
+        deliveryDays: 2,
+        notes: 'Includes standard installation and stabilizer.',
+        timestamp: Date.now() - 100000
+      }
+    ],
+    status: RequestStatus.OPEN,
+    createdAt: Date.now() - 200000,
+    location: 'Satara'
+  },
+  {
+    id: 'req-mock-2',
+    userId: 'u-buyer-2',
+    title: 'Samsung 253L 3 Star Inverter Double Door Refrigerator',
+    category: 'Fridge',
+    description: 'Need a double door fridge, silver color preferred. Samsung or Whirlpool.',
+    specs: {
+      brand: 'Samsung',
+      capacity: '253L',
+      type: 'Double Door',
+      rating: '3 Star'
+    },
+    estimatedMarketPrice: { min: 24000, max: 29000 },
+    bids: [],
+    status: RequestStatus.OPEN,
+    createdAt: Date.now() - 800000,
+    location: 'Satara'
+  },
+  {
+    id: 'req-mock-3',
+    userId: 'u-buyer-3',
+    title: 'Michelin Primacy 4 ST Car Tyres (195/65 R15)',
+    category: 'Car Tyres',
+    description: 'Set of 4 tyres for Honda City. Michelin or Bridgestone.',
+    specs: {
+      brand: 'Michelin',
+      size: '195/65 R15',
+      quantity: 4,
+      type: 'Tubeless'
+    },
+    estimatedMarketPrice: { min: 26000, max: 32000 },
+    bids: [],
+    status: RequestStatus.OPEN,
+    createdAt: Date.now() - 1200000,
+    location: 'Pune'
+  },
+  {
+    id: 'req-mock-4',
+    userId: 'u-buyer-4',
+    title: 'Sony Bravia 55 inch 4K Ultra HD Smart LED TV',
+    category: 'TV',
+    description: 'Looking for a Sony 55 inch TV for my living room. Smart features required.',
+    specs: {
+        brand: 'Sony',
+        size: '55 inch',
+        resolution: '4K',
+        type: 'LED'
+    },
+    estimatedMarketPrice: { min: 65000, max: 75000 },
+    bids: [
+        {
+            id: 'bid-m-2',
+            sellerName: 'ORANGE HOME APPLIANCES',
+            amount: 68000,
+            deliveryDays: 1,
+            notes: 'Wall mount included free of cost.',
+            timestamp: Date.now() - 50000
+        }
+    ],
+    status: RequestStatus.OPEN,
+    createdAt: Date.now() - 300000,
+    location: 'Kolhapur'
+  }
+];
 
 type ViewState = 'landing' | 'dashboard' | 'create_request';
 
@@ -61,7 +153,10 @@ function App() {
       });
     }
 
-    if (!user) return result.filter(r => r.status === RequestStatus.OPEN);
+    if (!user) {
+        // Public view: show open requests, filter by current city selected in landing
+        return result.filter(r => r.status === RequestStatus.OPEN && r.location === currentCity);
+    }
     
     if (user.role === UserRole.BUYER) {
       // Buyers ONLY see their own requests
@@ -69,12 +164,15 @@ function App() {
         .filter(req => req.userId === user.id)
         .sort((a, b) => b.createdAt - a.createdAt);
     } else {
-      // Sellers see requests in their city or all open requests
+      // Sellers see OPEN requests in THEIR city, or CLOSED requests they won
       return result
-        .filter(r => r.status === RequestStatus.OPEN || (r.status === RequestStatus.CLOSED && r.winningBidId && r.bids.some(b => b.sellerName === user.vendorName)))
+        .filter(r => 
+            (r.status === RequestStatus.OPEN && (!user.city || r.location === user.city)) || 
+            (r.status === RequestStatus.CLOSED && r.winningBidId && r.bids.some(b => b.sellerName === user.vendorName))
+        )
         .sort((a, b) => b.createdAt - a.createdAt);
     }
-  }, [user, requests, currentCategory]);
+  }, [user, requests, currentCategory, currentCity]);
 
   // Notifications Logic
   const myNotifications = useMemo(() => {
@@ -232,33 +330,19 @@ function App() {
       {/* Navbar */}
       <nav className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg transition-all">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('landing')}>
-              <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-rose-900/20">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setView('landing')}>
+              <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-rose-900/20 group-hover:scale-105 transition-transform">
                 M
               </div>
-              <span className="text-xl font-extrabold text-white tracking-tight hidden sm:block">
-                My Deal <span className="text-rose-500">24</span>
-              </span>
+              <div className="hidden sm:flex flex-col justify-center">
+                <span className="text-xl font-extrabold text-white tracking-tight leading-none">
+                  My Deal <span className="text-rose-500">24</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase mt-0.5 group-hover:text-rose-400 transition-colors">Negotiate freely, Buy smartly</span>
+              </div>
             </div>
             
-            {/* City Selector */}
-            <div className="relative group">
-               <div className="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 rounded-full px-4 py-1.5 border border-slate-700/50 transition-all cursor-pointer">
-                  <MapPinIcon className="w-4 h-4 text-rose-500" />
-                  <select 
-                      value={currentCity}
-                      onChange={(e) => setCurrentCity(e.target.value)}
-                      className="bg-transparent text-slate-200 text-sm font-bold outline-none appearance-none cursor-pointer pr-1"
-                  >
-                      {Object.keys(CITY_VENDORS).map(city => (
-                          <option key={city} value={city} className="bg-slate-900 text-white py-2">{city}</option>
-                      ))}
-                  </select>
-                  <ChevronDownIcon className="w-3 h-3 text-slate-500 pointer-events-none" />
-               </div>
-            </div>
-
             {/* Home Tab - Visible on all pages EXCEPT Landing Page */}
             {view !== 'landing' && (
               <button 
@@ -335,23 +419,23 @@ function App() {
         {/* LANDING PAGE VIEW */}
         {view === 'landing' && (
             <div className="text-center py-24 mb-12 relative overflow-visible animate-in fade-in duration-700">
+              
               {/* Decorative background blob for hero */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-rose-200/40 to-orange-200/40 blur-3xl rounded-full -z-10 animate-blob" />
               
-              <h1 className="text-7xl md:text-8xl font-black text-slate-900 tracking-tighter mb-8 leading-[0.9]">
-                Don't <br className="hidden md:block"/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-orange-600">Overpay.</span>
-              </h1>
-              
-              <p className="text-2xl md:text-3xl font-bold text-slate-700 mb-8 max-w-3xl mx-auto leading-tight">
-                The smartest way to buy Home appliances and more
-              </p>
-              
-              <p className="text-lg text-slate-500 mb-6 max-w-xl mx-auto font-medium">
-                Submit your requirement. Local verified sellers in <span className="font-bold text-slate-800">{currentCity}</span> compete to give you the lowest price.
-              </p>
+              <div className="relative z-10">
+                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter mb-6 leading-[0.9]">
+                  Don't <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-orange-600">Overpay.</span>
+                </h1>
+                
+                <p className="text-xl md:text-2xl font-light text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed tracking-wide">
+                  The smartest platform for <span className="font-medium text-slate-700">Fridges, ACs, Car Tyres</span> & more.
+                  <br/>
+                  <span className="text-sm uppercase tracking-widest font-bold opacity-60 mt-2 block">You Demand • Sellers Bid • You Win</span>
+                </p>
+              </div>
 
-              <div className="mb-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+              <div className="mb-10 flex flex-col sm:flex-row justify-center items-center gap-4 relative z-10">
                   <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold shadow-sm">
                       <MapPinIcon className="w-4 h-4 text-rose-500" />
                       Location: 
@@ -381,7 +465,7 @@ function App() {
                   </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
                 <button 
                   onClick={() => {
                     if (user) {
@@ -401,7 +485,7 @@ function App() {
               </div>
 
               {/* Trust indicators */}
-              <div className="mt-20 flex flex-wrap justify-center gap-8 md:gap-16 opacity-70">
+              <div className="mt-20 flex flex-wrap justify-center gap-8 md:gap-16 opacity-70 relative z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span className="text-3xl font-black text-slate-900">100+</span>
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Verified Sellers</span>
