@@ -163,53 +163,66 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="p-8">
+    <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 overflow-hidden max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 ring-1 ring-slate-900/5">
+       {/* Decorative gradient header bar */}
+       <div className="h-2 bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 w-full" />
+       
+      <div className="p-8 md:p-10">
         
         {/* Header */}
         {!analysis && (
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Fetch Product Specs</h2>
-            <p className="text-slate-500">Select a category and brand to find your perfect product.</p>
+          <div className="mb-10 text-center relative">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 bg-rose-500/10 rounded-full blur-2xl -z-10"></div>
+            <h2 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">
+              What are you looking for?
+            </h2>
+            <p className="text-slate-500 font-medium text-lg">
+              Select a category and let our AI find the best specs for you.
+            </p>
           </div>
         )}
 
         {/* Step 1: Category Selection & Input */}
         <div className={`transition-all duration-500 ${analysis ? 'hidden' : 'block'}`}>
           
-          {/* Category Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
+          {/* Category Tabs - Colorful & Modern */}
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => { setSelectedCategory(cat.id); setInput(''); setSelectedBrand(null); }}
-                className={`px-4 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 border-2 ${
+                className={`group relative px-5 py-3 rounded-2xl font-bold text-sm transition-all duration-300 flex items-center gap-2 overflow-hidden ${
                   selectedCategory === cat.id
-                    ? 'border-slate-900 bg-slate-900 text-white shadow-lg scale-105'
-                    : 'border-slate-100 bg-slate-50 text-slate-500 hover:border-slate-300 hover:bg-white'
+                    ? 'text-white shadow-xl shadow-indigo-500/20 scale-105 ring-2 ring-indigo-500/20'
+                    : 'bg-white text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/50 border border-slate-200 hover:border-indigo-100 hover:shadow-lg'
                 }`}
               >
-                <span>{cat.icon}</span>
-                {cat.label}
+                {selectedCategory === cat.id && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-violet-600" />
+                )}
+                <span className="relative z-10 text-lg group-hover:scale-110 transition-transform duration-300">{cat.icon}</span>
+                <span className="relative z-10">{cat.label}</span>
               </button>
             ))}
           </div>
 
           {/* Manufacturers List */}
-          <div className="mb-6 animate-in slide-in-from-bottom-1 duration-500 key={selectedCategory + '-brands'}">
-            <div className="flex items-center gap-2 mb-3 ml-1">
-                <TagIcon className="w-4 h-4 text-slate-400" />
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Top Brands</p>
+          <div className="mb-8 animate-in slide-in-from-bottom-2 duration-500 key={selectedCategory + '-brands'}">
+            <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                    <TagIcon className="w-4 h-4" />
+                </div>
+                <p className="text-sm font-extrabold text-slate-700 uppercase tracking-wide">Select Brand</p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
                 {MANUFACTURERS[selectedCategory]?.map((brand) => (
                 <button
                     key={brand}
                     onClick={() => handleBrandClick(brand)}
-                    className={`px-4 py-2 rounded-full text-sm font-bold border transition-all active:scale-95 ${
+                    className={`px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 active:scale-95 ${
                         selectedBrand === brand || input.startsWith(brand) 
-                        ? 'bg-rose-50 border-rose-200 text-rose-600 shadow-sm ring-2 ring-rose-100'
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:text-slate-800'
+                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700'
                     }`}
                 >
                     {brand}
@@ -218,16 +231,16 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             </div>
           </div>
 
-          <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide ml-1">
-            Search Product
+          <label className="block text-sm font-extrabold text-slate-700 mb-3 ml-1">
+            Search Product Model
           </label>
-          <div className="relative group mb-8">
-            <div className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400">
-              <SearchIcon className="w-5 h-5" />
+          <div className="relative group mb-10">
+            <div className="absolute top-1/2 -translate-y-1/2 left-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+              <SearchIcon className="w-6 h-6" />
             </div>
             <input
               type="text"
-              className="w-full pl-12 pr-4 py-4 border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-slate-100 focus:border-slate-400 outline-none transition-all text-slate-900 font-medium placeholder:text-slate-300 text-lg"
+              className="w-full pl-14 pr-14 py-5 border-2 border-slate-200/80 bg-slate-50/50 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all text-slate-900 font-bold placeholder:text-slate-400 text-lg shadow-inner"
               placeholder={PLACEHOLDERS[selectedCategory]}
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -236,36 +249,38 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             {input && (
                 <button 
                   onClick={() => { setInput(''); setSelectedBrand(null); }}
-                  className="absolute top-1/2 -translate-y-1/2 right-12 text-slate-300 hover:text-slate-500"
+                  className="absolute top-1/2 -translate-y-1/2 right-4 p-2 rounded-full hover:bg-slate-200 text-slate-400 transition-colors"
                 >
                   <XMarkIcon className="w-5 h-5" />
                 </button>
             )}
-            <div className="absolute bottom-[-24px] right-2 text-[10px] text-slate-400 font-bold flex items-center gap-1">
-              <SparklesIcon className="w-3 h-3 text-rose-500" /> Powered by AI Search
+            <div className="absolute -bottom-6 right-2 text-[11px] font-bold flex items-center gap-1.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 bg-clip-text text-transparent">
+              <SparklesIcon className="w-3.5 h-3.5 text-fuchsia-500" /> AI-Powered Specification Search
             </div>
           </div>
 
           {/* Dynamic Models Grid: Shows Brand Specific Models if selected, else Generic Popular Models */}
           <div className="mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
                <div className="flex items-center gap-2">
-                  <SparklesIcon className="w-4 h-4 text-rose-500" />
-                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                  <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-500">
+                    <SparklesIcon className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-sm font-extrabold text-slate-700 uppercase tracking-wide">
                     {selectedBrand ? `${selectedBrand} Models` : `Popular in ${selectedCategory}`}
                   </h3>
                </div>
                {selectedBrand && (
                  <button 
                    onClick={() => setSelectedBrand(null)} 
-                   className="text-xs font-bold text-slate-400 hover:text-rose-500"
+                   className="text-xs font-bold text-slate-400 hover:text-indigo-500 transition-colors"
                  >
                    Show All Brands
                  </button>
                )}
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* If Brand selected and we have models, show them. Else fallback to generic popular. */}
               {selectedBrand && BRAND_MODELS[selectedCategory]?.[selectedBrand] ? (
                  BRAND_MODELS[selectedCategory][selectedBrand].map((model, idx) => (
@@ -273,9 +288,9 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
                       key={idx}
                       onClick={() => handleSuggestionClick(`${selectedBrand} ${model}`)}
                       disabled={isAnalyzing}
-                      className="text-left p-4 rounded-xl border border-rose-100 bg-rose-50/50 hover:bg-white hover:border-rose-300 hover:shadow-md transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="text-left p-5 rounded-2xl border border-slate-100 bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100 hover:-translate-y-1 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <p className="font-bold text-slate-800 text-sm group-hover:text-rose-600 transition-colors line-clamp-2">{model}</p>
+                      <p className="font-bold text-slate-700 text-sm group-hover:text-indigo-600 transition-colors line-clamp-2 leading-relaxed">{model}</p>
                     </button>
                  ))
               ) : (
@@ -284,45 +299,48 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
                     key={idx}
                     onClick={() => handleSuggestionClick(model.name)}
                     disabled={isAnalyzing}
-                    className="text-left p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-rose-200 hover:shadow-md transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="text-left p-5 rounded-2xl border border-slate-100 bg-white hover:border-rose-200 hover:shadow-xl hover:shadow-rose-100 hover:-translate-y-1 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <p className="font-bold text-slate-800 text-sm group-hover:text-rose-600 transition-colors line-clamp-1">{model.name}</p>
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-1">{model.subtitle}</p>
+                    <p className="text-xs font-medium text-slate-400 mt-1 line-clamp-1 group-hover:text-slate-500">{model.subtitle}</p>
                   </button>
                 ))
               )}
 
               {selectedBrand && !BRAND_MODELS[selectedCategory]?.[selectedBrand] && (
-                  <div className="col-span-2 text-center py-6 text-slate-400 text-sm font-medium italic border border-dashed border-slate-200 rounded-xl bg-slate-50">
+                  <div className="col-span-2 text-center py-8 text-slate-400 text-sm font-medium italic border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
                     No specific models listed for {selectedBrand}. Please type the model name in the search bar.
                   </div>
               )}
             </div>
           </div>
           
-          <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-50">
+          <div className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100">
             <button
               onClick={onCancel}
-              className="text-slate-400 font-bold hover:text-slate-600 px-4"
+              className="text-slate-400 font-bold hover:text-slate-600 px-6 py-3 rounded-xl hover:bg-slate-50 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleAnalyze}
               disabled={isAnalyzing || !input.trim()}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-slate-300 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95"
+              className="relative overflow-hidden bg-slate-900 text-white px-10 py-4 rounded-xl font-bold shadow-xl shadow-slate-900/20 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 group"
             >
-              {isAnalyzing ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                  <span>Fetching Specs...</span>
-                </>
-              ) : (
-                <>
-                  <CloudArrowDownIcon className="w-5 h-5" />
-                  <span>Fetch Specifications</span>
-                </>
-              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[length:200%_auto] animate-gradient" />
+              <div className="relative flex items-center gap-2">
+                {isAnalyzing ? (
+                    <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>Fetching Specs...</span>
+                    </>
+                ) : (
+                    <>
+                    <CloudArrowDownIcon className="w-6 h-6" />
+                    <span>Fetch Specifications</span>
+                    </>
+                )}
+              </div>
             </button>
           </div>
         </div>
@@ -330,67 +348,72 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
         {/* Step 2: Review */}
         {analysis && (
           <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
               <div>
-                <h3 className="text-xl font-bold text-slate-900">Specifications Found</h3>
-                <p className="text-sm text-slate-500">We retrieved these details for your request</p>
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Specifications Found</h3>
+                <p className="text-slate-500 font-medium mt-1">We retrieved these details for your request</p>
               </div>
-              <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full border border-slate-200">
+              <span className="px-4 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-extrabold uppercase tracking-wide rounded-full border border-indigo-100 shadow-sm">
                 {selectedCategory}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 col-span-1 md:col-span-2 relative overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+              <div className="bg-gradient-to-br from-slate-50 to-indigo-50/30 p-6 rounded-[1.5rem] border border-white shadow-lg shadow-slate-200/50 col-span-1 md:col-span-2 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-indigo-500/10 transition-colors"></div>
                 <div className="relative z-10">
-                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Product Model</p>
-                    <p className="font-bold text-slate-900 text-lg pr-8">{analysis.title}</p>
+                    <p className="text-[11px] text-indigo-400 uppercase font-extrabold tracking-wider mb-2">Product Model</p>
+                    <p className="font-black text-slate-900 text-xl md:text-2xl pr-8 leading-tight mb-4">{analysis.title}</p>
                     <a 
                         href={`https://www.youtube.com/results?search_query=${encodeURIComponent(analysis.youtubeSearchQuery)}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 mt-3 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors border border-red-100"
+                        className="inline-flex items-center gap-2 text-xs font-bold text-white bg-[#FF0000] hover:bg-[#CC0000] px-4 py-2 rounded-full transition-all shadow-lg shadow-red-500/20 hover:shadow-red-500/40 hover:-translate-y-0.5"
                     >
-                        <PlayCircleIcon className="w-4 h-4" />
+                        <PlayCircleIcon className="w-4 h-4 fill-current" />
                         Watch Video Review
                     </a>
                 </div>
               </div>
               
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 col-span-1 md:col-span-2">
-                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-3">Key Specs</p>
-                <div className="flex flex-wrap gap-2">
+              <div className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 col-span-1 md:col-span-2">
+                <p className="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider mb-4 flex items-center gap-2">
+                    <TagIcon className="w-3 h-3" /> Key Specifications
+                </p>
+                <div className="flex flex-wrap gap-2.5">
                   {Object.entries(analysis.specs).map(([key, value]) => (
-                    <span key={key} className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-100 bg-slate-50 text-xs font-semibold text-slate-700">
-                      <span className="text-slate-400 mr-1.5 uppercase text-[9px] font-bold">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                    <span key={key} className="inline-flex items-center px-4 py-2 rounded-xl border border-indigo-50 bg-indigo-50/50 text-sm font-bold text-slate-700 hover:bg-indigo-100 transition-colors">
+                      <span className="text-indigo-400 mr-2 uppercase text-[10px] font-extrabold tracking-wide">{key.replace(/([A-Z])/g, ' $1')}:</span>
                       {String(value)}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-emerald-50 p-5 rounded-2xl border border-emerald-100">
-                <p className="text-[10px] text-emerald-600 uppercase font-bold tracking-wider mb-1">Market Price Est.</p>
-                <p className="font-extrabold text-emerald-700 text-xl">
-                  ₹{analysis.estimatedMarketPrice.min} - ₹{analysis.estimatedMarketPrice.max}
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-[1.5rem] text-white shadow-xl shadow-emerald-500/20 relative overflow-hidden">
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-5 -mb-5"></div>
+                <p className="text-[11px] text-emerald-100 uppercase font-extrabold tracking-wider mb-1 relative z-10">Market Price Est.</p>
+                <p className="font-black text-2xl md:text-3xl relative z-10">
+                  ₹{analysis.estimatedMarketPrice.min.toLocaleString()} - ₹{analysis.estimatedMarketPrice.max.toLocaleString()}
                 </p>
               </div>
-              <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100">
-                <p className="text-[10px] text-blue-600 uppercase font-bold tracking-wider mb-1">Suggested Budget</p>
-                <p className="font-extrabold text-blue-700 text-xl">₹{analysis.suggestedMaxBudget}</p>
+              
+              <div className="bg-white p-6 rounded-[1.5rem] border-2 border-slate-100 flex flex-col justify-center shadow-sm">
+                <p className="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider mb-1">Suggested Budget</p>
+                <p className="font-black text-2xl text-slate-900">₹{analysis.suggestedMaxBudget.toLocaleString()}</p>
               </div>
             </div>
 
-            <div className="flex gap-4 justify-between items-center">
+            <div className="flex gap-4 justify-between items-center pt-4 border-t border-slate-100">
               <button
                 onClick={() => setAnalysis(null)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-sm transition-colors px-4"
+                className="text-slate-400 hover:text-slate-600 font-bold text-sm transition-colors px-4 py-2 hover:bg-slate-50 rounded-lg"
               >
                 Search Different Model
               </button>
               <button
                 onClick={handleConfirm}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-xl shadow-slate-200 hover:scale-105"
+                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold transition-all flex items-center gap-2 shadow-xl shadow-slate-900/20 hover:scale-105 active:scale-95"
               >
                 <CheckCircleIcon className="w-5 h-5" />
                 Confirm & Request

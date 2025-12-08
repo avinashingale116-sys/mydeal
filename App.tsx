@@ -472,7 +472,15 @@ function App() {
         {view === 'dashboard' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             {user?.role === UserRole.SELLER ? (
-               <SellerDashboard sellerName={user.vendorName!} requests={requests} />
+               <SellerDashboard 
+                  sellerName={user.vendorName!} 
+                  sellerCity={user.city || currentCity}
+                  requests={requests} 
+                  onBidClick={(req) => {
+                     setSelectedRequest(req);
+                     setIsBidding(true);
+                  }}
+               />
             ) : (
                // Buyer & Public Dashboard Logic
                <div className="space-y-8">
@@ -578,7 +586,7 @@ function App() {
                                         <p className="text-sm font-bold text-slate-400 italic">No bids yet</p>
                                      )}
                                   </div>
-                               </div>
+                                </div>
                             </div>
                           </div>
 
