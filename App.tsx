@@ -15,7 +15,7 @@ const CITY_VENDORS: Record<string, string[]> = {
   'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES', 'Car Care Hub', 'Pune Tyre Center']
 };
 
-const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Washing Machine', 'Car Tyres'];
+const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Mobile', 'Washing Machine', 'Car Tyres'];
 
 // --- Mock Data ---
 const MOCK_REQUESTS: ProductRequirement[] = [
@@ -149,6 +149,7 @@ function App() {
         if (filter === 'ac') return cat.includes('air condition') || cat.includes('ac');
         if (filter === 'tv') return cat.includes('television') || cat.includes('tv');
         if (filter === 'car tyres') return cat.includes('tyre') || cat.includes('tire') || cat.includes('wheel');
+        if (filter === 'mobile') return cat.includes('phone') || cat.includes('mobile');
         
         return cat.includes(filter);
       });
@@ -347,6 +348,18 @@ function App() {
               </div>
             </div>
             
+            {/* Home Tab - Visible when not on landing page */}
+            {view !== 'landing' && (
+              <button 
+                onClick={() => setView('landing')}
+                className="relative group flex items-center gap-2 px-3 sm:px-5 py-2 rounded-full font-bold text-sm text-slate-200 transition-all duration-300 hover:text-white bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-rose-500/50 hover:shadow-[0_0_20px_-5px_rgba(244,63,94,0.4)] overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-rose-600/10 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <HomeIcon className="w-4 h-4 group-hover:text-rose-400 transition-colors duration-300 relative z-10" />
+                <span className="relative z-10">Home</span>
+              </button>
+            )}
+            
             {/* Dashboard Link - Visible when not on dashboard */}
             {view !== 'dashboard' && user && (
               <button 
@@ -422,63 +435,46 @@ function App() {
       <main className="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
         {/* LANDING PAGE VIEW */}
         {view === 'landing' && (
-            <div className="text-center py-24 mb-12 relative overflow-visible animate-in fade-in duration-700">
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] relative z-10 px-4 animate-in fade-in duration-700">
               
-              {/* Decorative background blob for hero */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-rose-200/40 to-orange-200/40 blur-3xl rounded-full -z-10 animate-blob" />
+              {/* Decorative background blob */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-200/30 rounded-full blur-3xl -z-10 animate-blob" />
               
-              <div className="relative z-10">
-                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter mb-6 leading-[0.9]">
-                  Don't <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-orange-600">Overpay.</span>
-                </h1>
-                
-                <p className="text-xl md:text-2xl font-light text-slate-500 mb-10 max-w-3xl mx-auto leading-relaxed">
-                  The smartest way to buy <span className="font-semibold text-slate-800">Home appliances</span>
-                  <br />
-                  <span className="block mt-4 text-lg text-slate-600">
-                    Local verified sellers compete to give you the <span className="font-bold text-rose-600">lowest and best price</span>.
-                  </span>
-                </p>
-              </div>
+              <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight text-center leading-tight">
+                What are you <br className="md:hidden"/>looking for?
+              </h1>
+              <p className="text-lg text-slate-600 font-medium mb-12 text-center max-w-2xl">
+                Get the best price for Fridge, AC, Car Tyres, and more. Buyers submit requirements, sellers bid to compete.
+              </p>
 
-              <div className="mb-10 flex flex-col sm:flex-row justify-center items-center gap-4 relative z-10">
-                  <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold shadow-sm">
-                      <MapPinIcon className="w-4 h-4 text-rose-500" />
-                      Location: 
-                      <select 
-                          value={currentCity}
-                          onChange={(e) => setCurrentCity(e.target.value)}
-                          className="bg-transparent border-none outline-none text-slate-900 font-bold cursor-pointer"
-                      >
-                            {Object.keys(CITY_VENDORS).map(city => (
-                              <option key={city} value={city}>{city}</option>
-                          ))}
-                      </select>
-                  </div>
+              <div className="flex flex-wrap justify-center gap-6 max-w-5xl">
+                {[
+                  { id: 'AC', label: 'AC', icon: '❄️' },
+                  { id: 'Fridge', label: 'Fridge', icon: '🧊' },
+                  { id: 'TV', label: 'TV', icon: '📺' },
+                  { id: 'Mobile', label: 'Mobile', icon: '📱' },
+                  { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' },
+                  { id: 'Car Tyres', label: 'Car Tyres', icon: '🛞' }
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setCurrentCategory(cat.id);
+                      setView('dashboard');
+                    }}
+                    className="group relative flex flex-col items-center justify-center w-32 h-32 md:w-40 md:h-40 bg-white/80 backdrop-blur-md rounded-3xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-rose-200/40 transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-orange-500/0 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                    
+                    <span className="text-4xl md:text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300 filter drop-shadow-sm">
+                      {cat.icon}
+                    </span>
+                    <span className="font-bold text-slate-700 text-sm md:text-base group-hover:text-rose-600 transition-colors">
+                      {cat.label}
+                    </span>
+                  </button>
+                ))}
               </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-                <button 
-                  onClick={() => openAuth(UserRole.BUYER)}
-                  className="bg-slate-900 text-white px-12 py-5 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-300 hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center gap-3"
-                >
-                  <SparklesIcon className="w-6 h-6 text-yellow-400" />
-                  Start Saving Now
-                </button>
-              </div>
-
-              {/* Stats Badge */}
-              <div className="mt-8 flex justify-center gap-4 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 flex-wrap">
-                  <div className="flex items-center gap-2 px-5 py-3 bg-white/50 backdrop-blur-sm rounded-full border border-slate-200 shadow-sm hover:scale-105 transition-transform">
-                      <CheckCircleIcon className="w-5 h-5 text-emerald-600" />
-                      <span className="font-bold text-slate-800 text-sm">100+ Verified Sellers</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-5 py-3 bg-white/50 backdrop-blur-sm rounded-full border border-slate-200 shadow-sm hover:scale-105 transition-transform">
-                      <TrendingDownIcon className="w-5 h-5 text-rose-600" />
-                      <span className="font-bold text-slate-800 text-sm">30% Avg Saving</span>
-                  </div>
-              </div>
-
             </div>
         )}
 
@@ -756,13 +752,13 @@ function App() {
         />
       )}
 
-      {selectedRequest && activeBidToPay && (
-         <PaymentModal 
-           request={selectedRequest}
-           bid={activeBidToPay}
-           onClose={() => { setSelectedRequest(null); setActiveBidToPay(null); }}
-           onConfirm={handlePaymentComplete}
-         />
+      {selectedRequest && activeBidToPay && user?.role === UserRole.BUYER && (
+        <PaymentModal
+          request={selectedRequest}
+          bid={activeBidToPay}
+          onClose={() => { setSelectedRequest(null); setActiveBidToPay(null); }}
+          onConfirm={handlePaymentComplete}
+        />
       )}
     </div>
   );

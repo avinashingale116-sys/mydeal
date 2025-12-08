@@ -12,6 +12,7 @@ const CATEGORIES = [
   { id: 'AC', label: 'AC', icon: '❄️' },
   { id: 'Fridge', label: 'Fridge', icon: '🧊' },
   { id: 'TV', label: 'TV', icon: '📺' },
+  { id: 'Mobile', label: 'Mobile', icon: '📱' },
   { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' },
   { id: 'Car Tyres', label: 'Car Tyres', icon: '🛞' }
 ];
@@ -21,6 +22,7 @@ const PLACEHOLDERS: Record<string, string> = {
   'AC': 'e.g., LG 1.5 Ton 5 Star AI Convertible 6-in-1 Split AC...',
   'Fridge': 'e.g., Samsung 236L 3 Star Digital Inverter Frost Free...',
   'TV': 'e.g., Sony Bravia 55 inch 4K Ultra HD Smart LED TV...',
+  'Mobile': 'e.g., iPhone 15 Pro Max 256GB Natural Titanium...',
   'Washing Machine': 'e.g., Bosch 7 kg 5 Star Inverter Touch Control Front Loading...',
   'Car Tyres': 'e.g., Michelin Primacy 4 ST 205/55 R16 Tubeless...'
 };
