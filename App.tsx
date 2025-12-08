@@ -262,7 +262,7 @@ function App() {
     };
     
     // Notify other sellers who have bid on this request
-    const competingSellers = new Set(selectedRequest.bids.map(b => b.sellerName));
+    const competingSellers = new Set<string>(selectedRequest.bids.map(b => b.sellerName));
     competingSellers.delete(user.vendorName); // Don't notify self
     
     competingSellers.forEach(competitor => {
@@ -339,7 +339,7 @@ function App() {
                 <span className="text-xl font-extrabold text-white tracking-tight leading-none">
                   My Deal <span className="text-rose-500">24</span>
                 </span>
-                <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase mt-0.5 group-hover:text-rose-400 transition-colors">Negotiate freely, Buy smartly</span>
+                <span className="text-[10px] font-bold tracking-widest uppercase mt-0.5 bg-gradient-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent group-hover:from-rose-300 group-hover:to-orange-300 transition-all">Negotiate freely, Buy smartly</span>
               </div>
             </div>
             
@@ -428,10 +428,12 @@ function App() {
                   Don't <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-orange-600">Overpay.</span>
                 </h1>
                 
-                <p className="text-xl md:text-2xl font-light text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed tracking-wide">
-                  The smartest platform for <span className="font-medium text-slate-700">Fridges, ACs, Car Tyres</span> & more.
-                  <br/>
-                  <span className="text-sm uppercase tracking-widest font-bold opacity-60 mt-2 block">You Demand • Sellers Bid • You Win</span>
+                <p className="text-xl md:text-2xl font-light text-slate-500 mb-10 max-w-3xl mx-auto leading-relaxed">
+                  The smartest way to buy <span className="font-semibold text-slate-800">Home appliances</span> and more.
+                  <br />
+                  <span className="block mt-4 text-lg text-slate-600">
+                    Submit Your requirement. Local verified sellers compete to give you the <span className="font-bold text-rose-600">lowest and best price</span>.
+                  </span>
                 </p>
               </div>
 
