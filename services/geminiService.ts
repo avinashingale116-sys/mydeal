@@ -50,9 +50,13 @@ const analysisSchema: Schema = {
     suggestedMaxBudget: {
       type: Type.NUMBER,
       description: "A recommended maximum budget cap for the user in INR."
+    },
+    youtubeSearchQuery: {
+        type: Type.STRING,
+        description: "A search query string to find video reviews for this specific model on YouTube (e.g. 'LG RS-Q19YNZE AC review')."
     }
   },
-  required: ["title", "category", "specs", "estimatedMarketPrice", "suggestedMaxBudget"]
+  required: ["title", "category", "specs", "estimatedMarketPrice", "suggestedMaxBudget", "youtubeSearchQuery"]
 };
 
 const bidSuggestionSchema: Schema = {

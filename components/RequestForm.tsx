@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { analyzeRequirement } from '../services/geminiService';
 import { AIAnalysisResult } from '../types';
-import { SparklesIcon, CheckCircleIcon, SearchIcon, CloudArrowDownIcon, TagIcon, XMarkIcon } from './Icons';
+import { SparklesIcon, CheckCircleIcon, SearchIcon, CloudArrowDownIcon, TagIcon, XMarkIcon, PlayCircleIcon } from './Icons';
 
 interface RequestFormProps {
   onSubmit: (data: AIAnalysisResult & { description: string }) => void;
@@ -341,9 +341,20 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 col-span-1 md:col-span-2">
-                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Product Model</p>
-                <p className="font-bold text-slate-900 text-lg">{analysis.title}</p>
+              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 col-span-1 md:col-span-2 relative overflow-hidden">
+                <div className="relative z-10">
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Product Model</p>
+                    <p className="font-bold text-slate-900 text-lg pr-8">{analysis.title}</p>
+                    <a 
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(analysis.youtubeSearchQuery)}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 mt-3 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors border border-red-100"
+                    >
+                        <PlayCircleIcon className="w-4 h-4" />
+                        Watch Video Review
+                    </a>
+                </div>
               </div>
               
               <div className="bg-white p-5 rounded-2xl border border-slate-200 col-span-1 md:col-span-2">

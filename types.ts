@@ -50,6 +50,7 @@ export interface AIAnalysisResult {
   specs: Record<string, string | number | boolean>;
   estimatedMarketPrice: { min: number; max: number };
   suggestedMaxBudget: number;
+  youtubeSearchQuery: string;
 }
 
 export interface BidSuggestion {
