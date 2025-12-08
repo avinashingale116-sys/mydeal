@@ -15,7 +15,7 @@ const CITY_VENDORS: Record<string, string[]> = {
   'Pune': ['REAL HOME APPLIANCES', 'JYOTI HOME APPLIANCES']
 };
 
-const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Washing Machine', 'Car Tyres'];
+const CATEGORIES = ['All', 'AC', 'Fridge', 'TV', 'Washing Machine'];
 
 // --- Mock Data ---
 const MOCK_REQUESTS: ProductRequirement[] = [

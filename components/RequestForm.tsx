@@ -12,18 +12,14 @@ const CATEGORIES = [
   { id: 'AC', label: 'AC', icon: '❄️' },
   { id: 'Fridge', label: 'Fridge', icon: '🧊' },
   { id: 'TV', label: 'TV', icon: '📺' },
-  { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' },
-  { id: 'Car Tyres', label: 'Car Tyres', icon: '🚗' },
-  { id: 'Other', label: 'Other', icon: '📦' }
+  { id: 'Washing Machine', label: 'Washing Machine', icon: '🧺' }
 ];
 
 const PLACEHOLDERS: Record<string, string> = {
   'AC': 'e.g., 1.5 Ton Split AC, 5 Star rating, Copper condenser, Voltas or LG...',
   'Fridge': 'e.g., Double door 260L, Frost free, Convertible, Samsung or Whirlpool...',
   'TV': 'e.g., 55 inch 4K Smart TV, Sony or LG, QLED display...',
-  'Washing Machine': 'e.g., Front load 7kg, Fully automatic, Inverter motor, LG or Bosch...',
-  'Car Tyres': 'e.g., 185/65 R15, Tubeless, Bridgestone or Michelin, for Swift Dzire...',
-  'Other': 'Describe what you are looking for in detail...'
+  'Washing Machine': 'e.g., Front load 7kg, Fully automatic, Inverter motor, LG or Bosch...'
 };
 
 const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
