@@ -21,7 +21,7 @@ const analysisSchema: Schema = {
   properties: {
     title: {
       type: Type.STRING,
-      description: "A concise, professional title for the product request (e.g., 'LG 1.5 Ton Inverter Split AC')."
+      description: "The full, official product model name and title (e.g., 'LG 1.5 Ton 5 Star AI Dual Inverter Split AC RS-Q19YNZE')."
     },
     category: {
       type: Type.STRING,
@@ -29,20 +29,21 @@ const analysisSchema: Schema = {
     },
     specs: {
       type: Type.OBJECT,
-      description: "Key technical specifications extracted or inferred from the user input.",
+      description: "Detailed technical specifications fetched for the specific model.",
       properties: {
         brand: { type: Type.STRING },
-        modelYear: { type: Type.STRING },
-        capacity: { type: Type.STRING },
-        features: { type: Type.STRING },
-        condition: { type: Type.STRING, description: "New or Used" }
+        model: { type: Type.STRING },
+        capacity_or_size: { type: Type.STRING },
+        key_features: { type: Type.STRING },
+        star_rating: { type: Type.STRING },
+        warranty: { type: Type.STRING }
       }
     },
     estimatedMarketPrice: {
       type: Type.OBJECT,
       properties: {
-        min: { type: Type.NUMBER, description: "Minimum realistic market price in INR." },
-        max: { type: Type.NUMBER, description: "Maximum realistic market price in INR." }
+        min: { type: Type.NUMBER, description: "Minimum current market price online in INR." },
+        max: { type: Type.NUMBER, description: "Maximum current market price online in INR." }
       },
       required: ["min", "max"]
     },
@@ -73,13 +74,14 @@ export const analyzeRequirement = async (userInput: string): Promise<AIAnalysisR
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `The user wants to buy a product but might not know the technical details or best price. 
-      Analyze this input: "${userInput}". 
-      Extract specifications, infer missing standard details for a good purchase, and estimate current market price in INR (Indian Rupees).`,
+      contents: `User Input: "${userInput}". 
+      The user is looking for specifications of a specific product model. 
+      Identify the model, retrieve its standard technical specifications from your knowledge base, and estimate its current price in India.
+      If the user provides a partial name, infer the most likely popular model.`,
       config: {
         responseMimeType: "application/json",
         responseSchema: analysisSchema,
-        systemInstruction: "You are a helpful procurement assistant. Your goal is to turn vague buyer requests into structured, professional Request for Quotations (RFQs) that sellers can easily bid on. Be realistic with price estimates in INR."
+        systemInstruction: "You are a product specification expert engine. Your goal is to take a product name or model number and 'fetch' its full technical details, features, and current market price in INR. Be precise with model numbers and specs."
       }
     });
 

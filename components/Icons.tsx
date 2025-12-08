@@ -119,3 +119,11 @@ export const HomeIcon = ({ className }: { className?: string }) => (
     <polyline points="9 22 9 12 15 12 15 22" />
   </svg>
 );
+
+export const CloudArrowDownIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M12 13v8l-4-4m4 4 4-4" />
+    <path d="M4.393 15.268A7 7 0 0 1 21.077 8.632" />
+    <path d="M12 13V5" />
+  </svg>
+);
