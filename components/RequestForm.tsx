@@ -26,6 +26,83 @@ const MANUFACTURERS: Record<string, string[]> = {
   'Tyres': ['MRF', 'Apollo', 'Michelin', 'Bridgestone', 'CEAT', 'JK Tyre', 'Goodyear', 'Yokohama', 'Continental']
 };
 
+const BRAND_DOMAINS: Record<string, string> = {
+  'LG': 'lg.com',
+  'Voltas': 'voltas.com',
+  'Samsung': 'samsung.com',
+  'Daikin': 'daikin.com',
+  'Blue Star': 'bluestarindia.com',
+  'Lloyd': 'havells.com',
+  'Hitachi': 'hitachi.com',
+  'Panasonic': 'panasonic.com',
+  'Carrier': 'carrier.com',
+  'O General': 'fujitsu-general.com',
+  'Whirlpool': 'whirlpool.com',
+  'Haier': 'haier.com',
+  'Godrej': 'godrej.com',
+  'Bosch': 'bosch.com',
+  'Hisense': 'hisense.com',
+  'Liebherr': 'liebherr.com',
+  'Sony': 'sony.com',
+  'Xiaomi': 'mi.com',
+  'OnePlus': 'oneplus.com',
+  'TCL': 'tcl.com',
+  'Vu': 'vutvs.com',
+  'Acer': 'acer.com',
+  'Toshiba': 'toshiba.com',
+  'Apple': 'apple.com',
+  'Google': 'store.google.com',
+  'Vivo': 'vivo.com',
+  'Oppo': 'oppo.com',
+  'Realme': 'realme.com',
+  'Nothing': 'nothing.tech',
+  'Motorola': 'motorola.com',
+  'IFB': 'ifbappliances.com',
+  'Siemens': 'siemens.com',
+  'MRF': 'mrftyres.com',
+  'Apollo': 'apollotyres.com',
+  'Michelin': 'michelin.com',
+  'Bridgestone': 'bridgestone.com',
+  'CEAT': 'ceat.com',
+  'JK Tyre': 'jktyre.com',
+  'Goodyear': 'goodyear.com',
+  'Yokohama': 'y-yokohama.com',
+  'Continental': 'continental.com'
+};
+
+const BRAND_LOGO_OVERRIDES: Record<string, string> = {
+  'Samsung': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png',
+  'LG': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/LG_logo_%282015%29.svg/2560px-LG_logo_%282015%29.svg.png',
+  'Sony': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Sony_logo.svg/2560px-Sony_logo.svg.png',
+  'Voltas': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Voltas_Limited_Logo.svg/1200px-Voltas_Limited_Logo.svg.png',
+  'Daikin': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Daikin_logo.svg/2560px-Daikin_logo.svg.png',
+  'Hitachi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Hitachi_logo.svg/2560px-Hitachi_logo.svg.png',
+  'Whirlpool': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Whirlpool_Corporation_Logo.svg/2560px-Whirlpool_Corporation_Logo.svg.png',
+  'Haier': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Haier_logo.svg/2560px-Haier_logo.svg.png',
+  'Panasonic': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Panasonic_logo_%28Blue%29.svg/2560px-Panasonic_logo_%28Blue%29.svg.png',
+  'Bosch': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Bosch-Logo.svg/2560px-Bosch-Logo.svg.png',
+  'Xiaomi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Xiaomi_logo.svg/1024px-Xiaomi_logo.svg.png',
+  'OnePlus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/OnePlus_logo.svg/2560px-OnePlus_logo.svg.png',
+  'Vivo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Vivo_mobile_logo.png/2560px-Vivo_mobile_logo.png',
+  'Oppo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/OPPO_Logo.svg/2560px-OPPO_Logo.svg.png',
+  'Realme': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Realme_logo.svg/2560px-Realme_logo.svg.png',
+  'Motorola': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Motorola_Consumer_Electronics_logo.svg/2560px-Motorola_Consumer_Electronics_logo.svg.png',
+  'MRF': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/MRF_Logo.svg/2560px-MRF_Logo.svg.png',
+  'CEAT': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/CEAT_logo.svg/2560px-CEAT_logo.svg.png',
+  'Michelin': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Michelin_logo.svg/2560px-Michelin_logo.svg.png',
+  'Bridgestone': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Bridgestone_logo.svg/2560px-Bridgestone_logo.svg.png',
+  'Carrier': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Carrier_Corporation_logo.svg/2560px-Carrier_Corporation_logo.svg.png',
+  'Blue Star': 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Blue_Star_logo.svg/1200px-Blue_Star_logo.svg.png',
+  'Godrej': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Godrej_Logo.svg/2560px-Godrej_Logo.svg.png',
+  'Apple': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png',
+  'Google': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png',
+  'Apollo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Apollo_Tyres_Logo.svg/2560px-Apollo_Tyres_Logo.svg.png',
+  'JK Tyre': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/JK_Tyre_Logo.svg/1200px-JK_Tyre_Logo.svg.png',
+  'Goodyear': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Goodyear_logo.svg/2560px-Goodyear_logo.svg.png',
+  'Continental': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Continental_logo.svg/2560px-Continental_logo.svg.png',
+  'Yokohama': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Yokohama_Rubber_Company_logo.svg/2560px-Yokohama_Rubber_Company_logo.svg.png'
+};
+
 const BRAND_MODELS: Record<string, Record<string, string[]>> = {
   'AC': {
     'LG': ['1.5 Ton 5 Star AI DUAL Inverter Split AC', '1.5 Ton 3 Star DUAL Inverter Split AC', '1 Ton 5 Star AI DUAL Inverter Split AC', '2 Ton 3 Star AI DUAL Inverter Split AC'],
@@ -206,28 +283,53 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             ))}
           </div>
 
-          {/* Manufacturers List */}
-          <div className="mb-8 animate-in slide-in-from-bottom-2 duration-500 key={selectedCategory + '-brands'}">
+          {/* Manufacturers Grid with Real Logos */}
+          <div className="mb-10 animate-in slide-in-from-bottom-2 duration-500 key={selectedCategory + '-brands'}">
             <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
                     <TagIcon className="w-4 h-4" />
                 </div>
                 <p className="text-sm font-extrabold text-slate-700 uppercase tracking-wide">Select Brand</p>
             </div>
-            <div className="flex flex-wrap gap-2.5">
-                {MANUFACTURERS[selectedCategory]?.map((brand) => (
-                <button
-                    key={brand}
-                    onClick={() => handleBrandClick(brand)}
-                    className={`px-5 py-2.5 rounded-xl text-sm font-bold border transition-all duration-200 active:scale-95 ${
-                        selectedBrand === brand || input.startsWith(brand) 
-                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-500/30'
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700'
-                    }`}
-                >
-                    {brand}
-                </button>
-                ))}
+            
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                {MANUFACTURERS[selectedCategory]?.map((brand) => {
+                  const domain = BRAND_DOMAINS[brand];
+                  // Use overrides for better wordmark logos, fallback to Clearbit, then fallback to text
+                  const logoUrl = BRAND_LOGO_OVERRIDES[brand] || (domain ? `https://logo.clearbit.com/${domain}?size=120&format=png` : null);
+                  const isSelected = selectedBrand === brand || input.startsWith(brand);
+                  
+                  return (
+                    <button
+                        key={brand}
+                        onClick={() => handleBrandClick(brand)}
+                        className={`group relative flex flex-col items-center justify-center p-2 rounded-2xl border transition-all duration-300 ${
+                            isSelected
+                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-500/30 scale-105 ring-2 ring-indigo-200 z-10'
+                            : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-1'
+                        }`}
+                    >
+                        {/* Logo Container - Clean white background for transparency */}
+                        <div className={`w-full h-16 flex items-center justify-center p-3 rounded-xl transition-colors bg-white ${isSelected ? 'opacity-95' : ''}`}>
+                           {logoUrl ? (
+                             <img 
+                                src={logoUrl} 
+                                alt={brand} 
+                                className="w-full h-full object-contain filter transition-all duration-300 group-hover:brightness-110" 
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden'); }} 
+                             />
+                           ) : null}
+                           {/* Fallback text if image fails loading or no domain */}
+                           <span className={`${logoUrl ? 'hidden' : ''} text-lg font-bold text-slate-400`}>{brand.charAt(0)}</span>
+                        </div>
+                        
+                        {isSelected && (
+                            <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full animate-pulse shadow-sm" />
+                        )}
+                        <span className={`text-[10px] font-bold mt-1 ${isSelected ? 'text-indigo-100' : 'text-slate-400'}`}>{brand}</span>
+                    </button>
+                  );
+                })}
             </div>
           </div>
 
