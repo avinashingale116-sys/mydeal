@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { analyzeRequirement } from '../services/geminiService';
 import { AIAnalysisResult } from '../types';
-import { SparklesIcon, CheckCircleIcon, SearchIcon, CloudArrowDownIcon, TagIcon, XMarkIcon, PlayCircleIcon } from './Icons';
+import { SparklesIcon, CheckCircleIcon, SearchIcon, TagIcon, XMarkIcon, PlayCircleIcon, BanknotesIcon } from './Icons';
 
 interface RequestFormProps {
   onSubmit: (data: AIAnalysisResult & { description: string }) => void;
@@ -71,36 +71,47 @@ const BRAND_DOMAINS: Record<string, string> = {
 };
 
 const BRAND_LOGO_OVERRIDES: Record<string, string> = {
-  'Samsung': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png',
-  'LG': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/LG_logo_%282015%29.svg/2560px-LG_logo_%282015%29.svg.png',
-  'Sony': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Sony_logo.svg/2560px-Sony_logo.svg.png',
-  'Voltas': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Voltas_Limited_Logo.svg/1200px-Voltas_Limited_Logo.svg.png',
-  'Daikin': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Daikin_logo.svg/2560px-Daikin_logo.svg.png',
-  'Hitachi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Hitachi_logo.svg/2560px-Hitachi_logo.svg.png',
-  'Whirlpool': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Whirlpool_Corporation_Logo.svg/2560px-Whirlpool_Corporation_Logo.svg.png',
-  'Haier': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Haier_logo.svg/2560px-Haier_logo.svg.png',
-  'Panasonic': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Panasonic_logo_%28Blue%29.svg/2560px-Panasonic_logo_%28Blue%29.svg.png',
-  'Bosch': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Bosch-Logo.svg/2560px-Bosch-Logo.svg.png',
-  'Xiaomi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Xiaomi_logo.svg/1024px-Xiaomi_logo.svg.png',
-  'OnePlus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/OnePlus_logo.svg/2560px-OnePlus_logo.svg.png',
-  'Vivo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Vivo_mobile_logo.png/2560px-Vivo_mobile_logo.png',
-  'Oppo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/OPPO_Logo.svg/2560px-OPPO_Logo.svg.png',
-  'Realme': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Realme_logo.svg/2560px-Realme_logo.svg.png',
-  'Motorola': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Motorola_Consumer_Electronics_logo.svg/2560px-Motorola_Consumer_Electronics_logo.svg.png',
-  'MRF': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/MRF_Logo.svg/2560px-MRF_Logo.svg.png',
-  'CEAT': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/CEAT_logo.svg/2560px-CEAT_logo.svg.png',
-  'Michelin': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Michelin_logo.svg/2560px-Michelin_logo.svg.png',
-  'Bridgestone': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Bridgestone_logo.svg/2560px-Bridgestone_logo.svg.png',
-  'Carrier': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Carrier_Corporation_logo.svg/2560px-Carrier_Corporation_logo.svg.png',
-  'Blue Star': 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Blue_Star_logo.svg/1200px-Blue_Star_logo.svg.png',
-  'Godrej': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Godrej_Logo.svg/2560px-Godrej_Logo.svg.png',
-  'Apple': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png',
-  'Google': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png',
-  'Apollo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Apollo_Tyres_Logo.svg/2560px-Apollo_Tyres_Logo.svg.png',
-  'JK Tyre': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/JK_Tyre_Logo.svg/1200px-JK_Tyre_Logo.svg.png',
-  'Goodyear': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Goodyear_logo.svg/2560px-Goodyear_logo.svg.png',
-  'Continental': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Continental_logo.svg/2560px-Continental_logo.svg.png',
-  'Yokohama': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Yokohama_Rubber_Company_logo.svg/2560px-Yokohama_Rubber_Company_logo.svg.png'
+  'Samsung': 'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
+  'LG': 'https://upload.wikimedia.org/wikipedia/commons/b/bf/LG_logo_%282015%29.svg',
+  'Sony': 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg',
+  'Voltas': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Voltas_Limited_Logo.svg',
+  'Daikin': 'https://upload.wikimedia.org/wikipedia/commons/0/02/Daikin_logo.svg',
+  'Hitachi': 'https://upload.wikimedia.org/wikipedia/commons/4/42/Hitachi_logo.svg',
+  'Whirlpool': 'https://upload.wikimedia.org/wikipedia/commons/9/90/Whirlpool_Corporation_Logo.svg',
+  'Haier': 'https://upload.wikimedia.org/wikipedia/commons/2/23/Haier_logo.svg',
+  'Panasonic': 'https://upload.wikimedia.org/wikipedia/commons/4/48/Panasonic_logo_%28Blue%29.svg',
+  'Bosch': 'https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-Logo.svg',
+  'Xiaomi': 'https://upload.wikimedia.org/wikipedia/commons/2/29/Xiaomi_logo.svg',
+  'OnePlus': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/OnePlus_logo.svg',
+  'Vivo': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Vivo_mobile_logo.png',
+  'Oppo': 'https://upload.wikimedia.org/wikipedia/commons/b/b8/OPPO_Logo.svg',
+  'Realme': 'https://upload.wikimedia.org/wikipedia/commons/1/1d/Realme_logo.svg',
+  'Motorola': 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Motorola_Consumer_Electronics_logo.svg',
+  'MRF': 'https://upload.wikimedia.org/wikipedia/commons/0/0e/MRF_Logo.svg',
+  'CEAT': 'https://upload.wikimedia.org/wikipedia/commons/1/13/CEAT_logo.svg',
+  'Michelin': 'https://upload.wikimedia.org/wikipedia/commons/2/22/Michelin_logo.svg',
+  'Bridgestone': 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Bridgestone_logo.svg',
+  'Carrier': 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Carrier_Corporation_logo.svg',
+  'Blue Star': 'https://upload.wikimedia.org/wikipedia/en/5/52/Blue_Star_logo.svg',
+  'Godrej': 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Godrej_Logo.svg',
+  'Apple': 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
+  'Google': 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+  'Apollo': 'https://upload.wikimedia.org/wikipedia/commons/7/70/Apollo_Tyres_Logo.svg',
+  'JK Tyre': 'https://upload.wikimedia.org/wikipedia/commons/e/e3/JK_Tyre_Logo.svg',
+  'Goodyear': 'https://upload.wikimedia.org/wikipedia/commons/8/87/Goodyear_logo.svg',
+  'Continental': 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Continental_logo.svg',
+  'Yokohama': 'https://upload.wikimedia.org/wikipedia/commons/5/58/Yokohama_Rubber_Company_logo.svg',
+  'O General': 'https://upload.wikimedia.org/wikipedia/commons/0/09/Fujitsu_General_logo.svg',
+  'Lloyd': 'https://upload.wikimedia.org/wikipedia/en/e/e9/Lloyd_Logo.svg',
+  'Hisense': 'https://upload.wikimedia.org/wikipedia/commons/2/28/Hisense_logo.svg',
+  'Liebherr': 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Liebherr_logo.svg',
+  'TCL': 'https://upload.wikimedia.org/wikipedia/commons/b/b1/TCL_Technology_logo.svg',
+  'Vu': 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Vu_Televisions_Logo.png',
+  'Acer': 'https://upload.wikimedia.org/wikipedia/commons/0/00/Acer_2011.svg',
+  'Toshiba': 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Toshiba_logo.svg',
+  'Nothing': 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Nothing_Technology_logo.svg',
+  'IFB': 'https://upload.wikimedia.org/wikipedia/en/7/73/IFB_Industries_Logo.svg',
+  'Siemens': 'https://upload.wikimedia.org/wikipedia/commons/5/57/Siemens_AG_logo.svg'
 };
 
 const BRAND_MODELS: Record<string, Record<string, string[]>> = {
@@ -191,7 +202,6 @@ const POPULAR_MODELS: Record<string, Array<{ name: string, subtitle: string }>> 
   ]
 };
 
-// Specific model examples to guide the user
 const PLACEHOLDERS: Record<string, string> = {
   'AC': 'e.g., LG 1.5 Ton 5 Star AI Convertible 6-in-1 Split AC...',
   'Fridge': 'e.g., Samsung 236L 3 Star Digital Inverter Frost Free...',
@@ -207,11 +217,11 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
   const [input, setInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<AIAnalysisResult | null>(null);
+  const [description, setDescription] = useState('');
 
   const handleAnalyze = async () => {
     if (!input.trim()) return;
     setIsAnalyzing(true);
-    // Explicitly ask for model specs
     const enrichedInput = `Category: ${selectedCategory}. Model/Product Name: ${input}. Fetch detailed specifications.`;
     const result = await analyzeRequirement(enrichedInput);
     setAnalysis(result);
@@ -229,24 +239,25 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
 
   const handleBrandClick = (brand: string) => {
     setSelectedBrand(brand);
-    // Auto-focus or prepopulate input with brand to encourage user
     setInput(`${brand} `);
   };
 
   const handleConfirm = () => {
     if (analysis) {
-      onSubmit({ ...analysis, description: input });
+      onSubmit({ 
+        ...analysis, 
+        description: description || `Looking for best price for ${analysis.title}` 
+      });
     }
   };
 
   return (
     <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 overflow-hidden max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 ring-1 ring-slate-900/5">
-       {/* Decorative gradient header bar */}
        <div className="h-2 bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 w-full" />
        
       <div className="p-8 md:p-10">
         
-        {/* Header */}
+        {/* Header - Only show in search mode */}
         {!analysis && (
           <div className="mb-10 text-center relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 bg-rose-500/10 rounded-full blur-2xl -z-10"></div>
@@ -262,7 +273,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
         {/* Step 1: Category Selection & Input */}
         <div className={`transition-all duration-500 ${analysis ? 'hidden' : 'block'}`}>
           
-          {/* Category Tabs - Colorful & Modern */}
+          {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             {CATEGORIES.map((cat) => (
               <button
@@ -283,8 +294,8 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             ))}
           </div>
 
-          {/* Manufacturers Grid with Real Logos */}
-          <div className="mb-10 animate-in slide-in-from-bottom-2 duration-500 key={selectedCategory + '-brands'}">
+          {/* Manufacturers Grid */}
+          <div className="mb-10 animate-in slide-in-from-bottom-2 duration-500">
             <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
                     <TagIcon className="w-4 h-4" />
@@ -292,10 +303,9 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
                 <p className="text-sm font-extrabold text-slate-700 uppercase tracking-wide">Select Brand</p>
             </div>
             
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
                 {MANUFACTURERS[selectedCategory]?.map((brand) => {
                   const domain = BRAND_DOMAINS[brand];
-                  // Use overrides for better wordmark logos, fallback to Clearbit, then fallback to text
                   const logoUrl = BRAND_LOGO_OVERRIDES[brand] || (domain ? `https://logo.clearbit.com/${domain}?size=120&format=png` : null);
                   const isSelected = selectedBrand === brand || input.startsWith(brand);
                   
@@ -303,30 +313,28 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
                     <button
                         key={brand}
                         onClick={() => handleBrandClick(brand)}
-                        className={`group relative flex flex-col items-center justify-center p-2 rounded-2xl border transition-all duration-300 ${
+                        className={`group relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-300 h-32 ${
                             isSelected
                             ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-500/30 scale-105 ring-2 ring-indigo-200 z-10'
-                            : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-1'
+                            : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:shadow-lg hover:-translate-y-1'
                         }`}
                     >
-                        {/* Logo Container - Clean white background for transparency */}
-                        <div className={`w-full h-16 flex items-center justify-center p-3 rounded-xl transition-colors bg-white ${isSelected ? 'opacity-95' : ''}`}>
+                        <div className={`w-full flex-1 flex items-center justify-center p-2 rounded-xl transition-colors bg-white ${isSelected ? 'opacity-100' : ''}`}>
                            {logoUrl ? (
                              <img 
                                 src={logoUrl} 
                                 alt={brand} 
-                                className="w-full h-full object-contain filter transition-all duration-300 group-hover:brightness-110" 
+                                className="max-w-full max-h-16 object-contain filter transition-all duration-300 group-hover:scale-110" 
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden'); }} 
                              />
                            ) : null}
-                           {/* Fallback text if image fails loading or no domain */}
-                           <span className={`${logoUrl ? 'hidden' : ''} text-lg font-bold text-slate-400`}>{brand.charAt(0)}</span>
+                           <span className={`${logoUrl ? 'hidden' : ''} text-2xl font-black text-slate-300`}>{brand.charAt(0)}</span>
                         </div>
                         
                         {isSelected && (
                             <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full animate-pulse shadow-sm" />
                         )}
-                        <span className={`text-[10px] font-bold mt-1 ${isSelected ? 'text-indigo-100' : 'text-slate-400'}`}>{brand}</span>
+                        <span className={`text-xs font-black uppercase tracking-wide mt-3 ${isSelected ? 'text-white' : 'text-slate-700'}`}>{brand}</span>
                     </button>
                   );
                 })}
@@ -361,7 +369,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             </div>
           </div>
 
-          {/* Dynamic Models Grid: Shows Brand Specific Models if selected, else Generic Popular Models */}
+          {/* Dynamic Models Grid */}
           <div className="mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="flex items-center justify-between mb-5">
                <div className="flex items-center gap-2">
@@ -383,7 +391,6 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* If Brand selected and we have models, show them. Else fallback to generic popular. */}
               {selectedBrand && BRAND_MODELS[selectedCategory]?.[selectedBrand] ? (
                  BRAND_MODELS[selectedCategory][selectedBrand].map((model, idx) => (
                     <button
@@ -408,12 +415,6 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
                   </button>
                 ))
               )}
-
-              {selectedBrand && !BRAND_MODELS[selectedCategory]?.[selectedBrand] && (
-                  <div className="col-span-2 text-center py-8 text-slate-400 text-sm font-medium italic border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
-                    No specific models listed for {selectedBrand}. Please type the model name in the search bar.
-                  </div>
-              )}
             </div>
           </div>
           
@@ -429,97 +430,96 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit, onCancel }) => {
               disabled={isAnalyzing || !input.trim()}
               className="relative overflow-hidden bg-slate-900 text-white px-10 py-4 rounded-xl font-bold shadow-xl shadow-slate-900/20 transition-all flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[length:200%_auto] animate-gradient" />
-              <div className="relative flex items-center gap-2">
-                {isAnalyzing ? (
-                    <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                    <span>Fetching Specs...</span>
-                    </>
-                ) : (
-                    <>
-                    <CloudArrowDownIcon className="w-6 h-6" />
-                    <span>Fetch Specifications</span>
-                    </>
-                )}
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative z-10">{isAnalyzing ? 'Analyzing...' : 'Find Specs'}</span>
+              {!isAnalyzing && <SparklesIcon className="w-5 h-5 relative z-10 text-indigo-300 group-hover:text-white" />}
             </button>
           </div>
         </div>
 
-        {/* Step 2: Review */}
+        {/* Step 2: Analysis Result */}
         {analysis && (
           <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
-              <div>
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Specifications Found</h3>
-                <p className="text-slate-500 font-medium mt-1">We retrieved these details for your request</p>
-              </div>
-              <span className="px-4 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-extrabold uppercase tracking-wide rounded-full border border-indigo-100 shadow-sm">
-                {selectedCategory}
-              </span>
+            <div className="text-center mb-8">
+               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
+                  <CheckCircleIcon className="w-8 h-8" />
+               </div>
+               <h2 className="text-2xl font-black text-slate-900">Is this what you're looking for?</h2>
+               <p className="text-slate-500">We found the specifications for your product.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-              <div className="bg-gradient-to-br from-slate-50 to-indigo-50/30 p-6 rounded-[1.5rem] border border-white shadow-lg shadow-slate-200/50 col-span-1 md:col-span-2 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-indigo-500/10 transition-colors"></div>
-                <div className="relative z-10">
-                    <p className="text-[11px] text-indigo-400 uppercase font-extrabold tracking-wider mb-2">Product Model</p>
-                    <p className="font-black text-slate-900 text-xl md:text-2xl pr-8 leading-tight mb-4">{analysis.title}</p>
-                    <a 
-                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(analysis.youtubeSearchQuery)}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-bold text-white bg-[#FF0000] hover:bg-[#CC0000] px-4 py-2 rounded-full transition-all shadow-lg shadow-red-500/20 hover:shadow-red-500/40 hover:-translate-y-0.5"
-                    >
-                        <PlayCircleIcon className="w-4 h-4 fill-current" />
-                        Watch Video Review
-                    </a>
-                </div>
-              </div>
-              
-              <div className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 col-span-1 md:col-span-2">
-                <p className="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider mb-4 flex items-center gap-2">
-                    <TagIcon className="w-3 h-3" /> Key Specifications
-                </p>
-                <div className="flex flex-wrap gap-2.5">
-                  {Object.entries(analysis.specs).map(([key, value]) => (
-                    <span key={key} className="inline-flex items-center px-4 py-2 rounded-xl border border-indigo-50 bg-indigo-50/50 text-sm font-bold text-slate-700 hover:bg-indigo-100 transition-colors">
-                      <span className="text-indigo-400 mr-2 uppercase text-[10px] font-extrabold tracking-wide">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                      {String(value)}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 mb-6">
+               <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-1">
+                     <span className="inline-block px-3 py-1 bg-slate-900 text-white text-xs font-bold rounded-full mb-3 shadow-md shadow-slate-900/10">
+                        {analysis.category}
+                     </span>
+                     <h3 className="text-xl font-bold text-slate-900 leading-tight mb-4">
+                        {analysis.title}
+                     </h3>
+                     
+                     <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                        {Object.entries(analysis.specs).map(([key, value]) => (
+                           <div key={key}>
+                              <p className="text-[10px] uppercase font-bold text-slate-400">{key.replace(/_/g, ' ')}</p>
+                              <p className="text-sm font-semibold text-slate-700">{String(value)}</p>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
 
-              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-[1.5rem] text-white shadow-xl shadow-emerald-500/20 relative overflow-hidden">
-                <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-5 -mb-5"></div>
-                <p className="text-[11px] text-emerald-100 uppercase font-extrabold tracking-wider mb-1 relative z-10">Market Price Est.</p>
-                <p className="font-black text-2xl md:text-3xl relative z-10">
-                  ₹{analysis.estimatedMarketPrice.min.toLocaleString()} - ₹{analysis.estimatedMarketPrice.max.toLocaleString()}
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-[1.5rem] border-2 border-slate-100 flex flex-col justify-center shadow-sm">
-                <p className="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider mb-1">Suggested Budget</p>
-                <p className="font-black text-2xl text-slate-900">₹{analysis.suggestedMaxBudget.toLocaleString()}</p>
-              </div>
+                  <div className="md:w-72 flex flex-col gap-4">
+                     <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div className="flex items-center gap-2 mb-2">
+                           <BanknotesIcon className="w-4 h-4 text-rose-500" />
+                           <p className="text-xs font-bold text-slate-500 uppercase">Est. Market Price</p>
+                        </div>
+                        <p className="text-2xl font-black text-slate-900">
+                           ₹{analysis.estimatedMarketPrice.min.toLocaleString()} - ₹{analysis.estimatedMarketPrice.max.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-1">Online Average</p>
+                     </div>
+
+                     <a 
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(analysis.youtubeSearchQuery)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-red-50 hover:bg-red-100 text-red-600 p-4 rounded-xl border border-red-100 flex items-center gap-3 transition-colors group"
+                     >
+                        <PlayCircleIcon className="w-8 h-8 group-hover:scale-110 transition-transform" />
+                        <div>
+                           <p className="font-bold text-sm">Watch Reviews</p>
+                           <p className="text-xs opacity-70">On YouTube</p>
+                        </div>
+                     </a>
+                  </div>
+               </div>
             </div>
 
-            <div className="flex gap-4 justify-between items-center pt-4 border-t border-slate-100">
-              <button
-                onClick={() => setAnalysis(null)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-sm transition-colors px-4 py-2 hover:bg-slate-50 rounded-lg"
-              >
-                Search Different Model
-              </button>
-              <button
-                onClick={handleConfirm}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold transition-all flex items-center gap-2 shadow-xl shadow-slate-900/20 hover:scale-105 active:scale-95"
-              >
-                <CheckCircleIcon className="w-5 h-5" />
-                Confirm & Request
-              </button>
+            <div className="mb-8">
+               <label className="block text-sm font-bold text-slate-700 mb-2">Add Specific Requirements (Optional)</label>
+               <textarea 
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="E.g., I need installation included, old exchange available, delivery within 24 hours..."
+                  className="w-full p-4 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all font-medium text-slate-700 min-h-[100px]"
+               />
+            </div>
+
+            <div className="flex justify-between items-center pt-6 border-t border-slate-100">
+               <button
+                  onClick={() => setAnalysis(null)}
+                  className="text-slate-400 font-bold hover:text-slate-600 px-6 py-3 rounded-xl hover:bg-slate-50 transition-colors"
+               >
+                  Back to Search
+               </button>
+               <button
+                  onClick={handleConfirm}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-emerald-200 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-2"
+               >
+                  <CheckCircleIcon className="w-5 h-5" />
+                  Post Requirement
+               </button>
             </div>
           </div>
         )}
