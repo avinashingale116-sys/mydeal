@@ -441,29 +441,45 @@ function App() {
                  </div>
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-2 tracking-tight text-center leading-none">
-                Don't <span className="text-rose-600">overpay.</span>
-              </h1>
-              <h2 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900 mb-6 text-center leading-tight max-w-3xl">
-                The smartest way to buy Home Appliances & Tyres.
-              </h2>
-              <p className="text-lg text-slate-600 font-medium mb-10 text-center max-w-2xl leading-relaxed">
-                Stop overpaying for appliances. Post your requirement and let local sellers compete to give you the best price within 24 hours.
+              <p className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-red-500 to-orange-600 mb-8 tracking-tighter animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100 drop-shadow-sm">
+                Don't Overpay.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in slide-in-from-bottom-8 duration-1000 delay-150">
-              <button 
-                onClick={() => openAuth(UserRole.BUYER)}
-                className="group relative px-8 py-4 bg-slate-900 text-white font-bold rounded-full text-lg shadow-xl shadow-rose-900/20 overflow-hidden hover:scale-105 transition-transform"
-              >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-500 via-orange-500 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient" />
-                <span className="relative flex items-center gap-2">
-                  Start Saving Now <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </span>
-              </button>
-              <button onClick={() => openAuth(UserRole.SELLER)} className="text-sm font-bold text-slate-500 hover:text-slate-800 underline decoration-slate-300 underline-offset-4">
-                Are you a Seller? Join here
-              </button>
+              <h1 className="text-4xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight text-center leading-none max-w-5xl">
+                The smartest way to buy Home Appliances.
+              </h1>
+
+              <div className="space-y-4 mb-10 text-center">
+                  <p className="text-xl md:text-2xl font-bold text-rose-600 tracking-wide uppercase">
+                    submit your requirement
+                  </p>
+                  <p className="text-lg md:text-xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
+                    Local verified sellers compete to give you lowest and best price
+                  </p>
+              </div>
+
+              <div className="flex flex-col items-center animate-in slide-in-from-bottom-8 duration-1000 delay-150">
+                  <div className="flex gap-4 mb-6">
+                    <button 
+                        onClick={() => openAuth(UserRole.BUYER)}
+                        className="group relative px-8 py-4 bg-slate-900 text-white font-bold rounded-full text-lg shadow-xl shadow-rose-900/20 overflow-hidden hover:scale-105 transition-transform"
+                    >
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-rose-500 via-orange-500 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient" />
+                        <span className="relative flex items-center gap-2">
+                        Start Saving Now <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        </span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
+                      <div className="flex -space-x-2">
+                          <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center border-2 border-white"><CheckCircleIcon className="w-3 h-3 text-emerald-600" /></div>
+                          <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center border-2 border-white"><CheckCircleIcon className="w-3 h-3 text-blue-600" /></div>
+                      </div>
+                      <p className="text-sm font-bold text-slate-700">
+                          100+ verified sellers , 30% avg saving
+                      </p>
+                  </div>
               </div>
             </div>
         )}
@@ -673,6 +689,27 @@ function App() {
           />
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-200 mt-auto relative z-10">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="text-center md:text-left">
+                    <h3 className="text-lg font-black text-slate-900">My Deal <span className="text-rose-500">24</span></h3>
+                    <p className="text-sm text-slate-500 mt-1">The smartest way to buy local.</p>
+                </div>
+                <div className="flex gap-6 text-sm font-bold text-slate-500">
+                    <button className="hover:text-slate-900 transition-colors">About Us</button>
+                    <button className="hover:text-slate-900 transition-colors">For Sellers</button>
+                    <button className="hover:text-slate-900 transition-colors">Privacy Policy</button>
+                    <button className="hover:text-slate-900 transition-colors">Terms of Service</button>
+                </div>
+                <div className="text-xs text-slate-400 font-medium">
+                    © 2024 My Deal 24. All rights reserved.
+                </div>
+            </div>
+        </div>
+      </footer>
 
       {/* MODALS */}
       {showAuthModal && (
